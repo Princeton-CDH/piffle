@@ -1,7 +1,11 @@
 # iiifclient
+# -*- coding: utf-8 -*-
 
 from collections import OrderedDict
 from urlparse import urlparse
+
+from cached_property import cached_property
+import requests
 
 
 class IIIFImageClientException(Exception):
@@ -156,6 +160,80 @@ class ImageRegion(object):
 
         x, y, width, height = coords
         self.options.update({'x': x, 'y': y, 'width': width, 'height': height})
+
+    def canonicalize(self):
+        # canonicalize the current region options so that
+        # serialization results in canonical format.
+        # From the spec:
+        #   “full” if the whole image is requested, (including a “square”
+        #    region of a square image), otherwise the x,y,w,h syntax.
+
+        if self.options['full']:
+            # nothing to do
+            return
+
+        # if already in x,y,w,h format - nothing to do
+        if not any([self.options['full'], self.options['square'],
+                    self.options['percent']]):
+            return
+
+        # possbly an error here for every other case if self.img is not set,
+        # since it's probably not possible to canonicalize without knowing
+        # image size  (any exceptions?)
+        if self.img is None:
+            raise IIIFImageClientException('Cannot canonicalize without image')
+
+        if self.options['square']:
+            # if image is square, then return full
+            if self.img is not None and \
+             self.img.image_width == self.img.image_height:
+                self.options['full'] = True
+                self.options['square'] = False
+                return
+
+            # otherwise convert to x,y,w,h
+            # from the spec:
+            #  The region is defined as an area where the width and height
+            #  are both equal to the length of the shorter dimension of the
+            #  complete image. The region may be positioned anywhere in the
+            #  longer dimension of the image content at the server’s
+            #  discretion, and centered is often a reasonable default.
+
+            # determine size of the short edge
+            short_edge = min(self.img.image_width, self.img.image_height)
+            width = height = short_edge
+            # calculate starting long edge point to center the square
+            if self.img.image_height == short_edge:
+                y = 0
+                x = (self.img.image_width - short_edge) / 2
+            else:
+                x = 0
+                y = (self.img.image_height - short_edge) / 2
+
+            self.options.update({'x': x, 'y': y, 'width': width,
+                                 'height': height, 'square': False})
+
+        if self.options['percent']:
+            # convert percentages to x,y,w,h
+            # From the spec:
+            #  The region to be returned is specified as a sequence of
+            #  percentages of the full image’s dimensions, as reported in
+            #  the image information document. Thus, x represents the number
+            #  of pixels from the 0 position on the horizontal axis, calculated
+            #  as a percentage of the reported width. w represents the width
+            #  of the region, also calculated as a percentage of the reported
+            #  width. The same applies to y and h respectively. These may be
+            #  floating point numbers.
+
+            # convert percentages to dimensions based on image size
+            self.options.update({
+                'percent': False,
+                'x': (self.options['x']/100) * self.img.image_width,
+                'y': (self.options['y']/100) * self.img.image_height,
+                'width': (self.options['width']/100) * self.img.image_width,
+                'height': (self.options['height']/100) * self.img.image_height
+            })
+            return
 
 
 class ImageSize(object):
@@ -445,6 +523,25 @@ class IIIFImageClient(object):
             'endpoint': self.api_endpoint,
             'id': self.get_image_id(),
         }
+
+    @cached_property
+    def image_info(self):
+        'Retrieve image information provided as JSON at info url'
+        resp = requests.get(self.info())
+        if resp.status_code == requests.codes.ok:
+            return resp.json()
+        else:
+            resp.raise_for_status()
+
+    @property
+    def image_width(self):
+        'Image width as reported in :attr:`image_info`'
+        return self.image_info['width']
+
+    @property
+    def image_height(self):
+        'Image height as reported in :attr:`image_info`'
+        return self.image_info['height']
 
     def get_copy(self):
         'Get a clone of the current settings for modification.'

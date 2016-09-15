@@ -1,4 +1,5 @@
 from piffle import iiif
+from mock import patch
 import pytest
 
 api_endpoint = 'http://imgserver.co'
@@ -20,6 +21,13 @@ INVALID_URLS = {
     'complex': 'http://imgserver.co/img1/2560,2560,256,256/256,/!90/default.jpg',
     'bad_size': '%s/%s/full/a,/0/default.jpg' % (api_endpoint, image_id),
     'bad_region': '%s/%s/200,200/full/0/default.jpg' % (api_endpoint, image_id)
+}
+
+sample_image_info = {
+    '@context': "http://iiif.io/api/image/2/context.json",
+    '@id': VALID_URLS['simple'],
+    'height': 3039,
+    'width': 2113,
 }
 
 
@@ -212,6 +220,14 @@ class TestIIIFImageClient:
             'format': 'jpg'
         }
 
+    def test_image_width_height(self):
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=sample_image_info):
+            assert img.image_width == sample_image_info['width']
+            assert img.image_height == sample_image_info['height']
+
 
 class TestImageRegion:
 
@@ -315,6 +331,60 @@ class TestImageRegion:
         with pytest.raises(iiif.ParseError):
             region.parse('pct:1,3,')
             region.parse('one,two,three,four')
+
+    def test_canonicalize(self):
+        # any canonicalization that requires image dimensions to calculate
+        # should raise an error
+        region = iiif.ImageRegion()
+        region.parse('square')
+        with pytest.raises(iiif.IIIFImageClientException):
+            region.canonicalize()
+
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+        # full to full - trivial canonicalization
+        img.region.canonicalize()
+        assert unicode(img.region) == 'full'
+        # x,y,w,h should be preserved as is
+        dimensions = '0,0,200,250'
+        img.region.parse(dimensions)
+        img.region.canonicalize()
+        # round trip, should be the same
+        assert unicode(img.region) == dimensions
+
+        # test with square image size
+        square_img_info = sample_image_info.copy()
+        square_img_info.update({'height': 100, 'width': 100})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=square_img_info):
+            # square requested, image is square = full
+            img.region.parse('square')
+            img.region.canonicalize()
+            assert unicode(img.region) == 'full'
+
+            # percentages
+            img.region.parse('pct:10,1,50,75')
+            img.region.canonicalize()
+            assert unicode(img.region) == '10,1,50,75'
+
+        # test with square with non-square image size
+        tall_img_info = sample_image_info.copy()
+        tall_img_info.update({'width': 100, 'height': 150})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=tall_img_info):
+            # square requested, should convert to x,y,w,h
+            img.region.parse('square')
+            img.region.canonicalize()
+            assert unicode(img.region) == '0,25,100,100'
+
+        wide_img_info = sample_image_info.copy()
+        wide_img_info.update({'width': 200, 'height': 50})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=wide_img_info):
+            # square requested, should convert to x,y,w,h
+            img.region.parse('square')
+            img.region.canonicalize()
+
+            assert unicode(img.region) == '75,0,50,50'
 
 
 class TestImageSize:
