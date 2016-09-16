@@ -1,6 +1,8 @@
 from piffle import iiif
 from mock import patch
 import pytest
+import requests
+
 
 api_endpoint = 'http://imgserver.co'
 image_id = 'img1'
@@ -50,7 +52,7 @@ class TestIIIFImageClient:
     def test_outputs(self):
         img = get_test_imgclient()
         # str and unicode should be equivalent
-        assert unicode(img.info()) == unicode(str(img.info()))
+        assert unicode(img.info()) == str(img.info())
         # repr should have class and image id
         assert 'IIIFImageClient' in repr(img)
         assert img.get_image_id() in repr(img)
@@ -187,10 +189,11 @@ class TestIIIFImageClient:
         # malformed
         with pytest.raises(iiif.ParseError):
             img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['info'])
-            img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['simple'])
-            img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['complex'])
-            img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_size'])
-            img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_region'])
+            iiif.IIIFImageClient.init_from_url(INVALID_URLS['simple'])
+            iiif.IIIFImageClient.init_from_url(INVALID_URLS['complex'])
+            iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_size'])
+            iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_region'])
+            iiif.IIIFImageClient.init_from_url('http://info.json')
 
     def test_as_dicts(self):
         img = iiif.IIIFImageClient.init_from_url(VALID_URLS['complex'])
@@ -219,6 +222,26 @@ class TestIIIFImageClient:
             'quality': 'default',
             'format': 'jpg'
         }
+
+    @patch('piffle.iiif.requests')
+    def test_image_info(self, mockrequests):
+        # test image info logic by mocking requests
+        mockrequests.codes.ok = requests.codes.ok
+        mockresponse = mockrequests.get.return_value
+        mockresponse.status_code = requests.codes.ok
+        mockresponse.json.return_value = sample_image_info
+
+        # valid response
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+        assert img.image_info == sample_image_info
+        mockrequests.get.assert_called_with(img.info())
+        mockresponse.json.assert_called_with()
+
+        # error response
+        mockresponse.status_code = 400
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+        img.image_info
+        mockresponse.raise_for_status.assert_called_with()
 
     def test_image_width_height(self):
         img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
@@ -272,8 +295,12 @@ class TestImageRegion:
             iiif.ImageRegion(x=1, y=2)
             iiif.ImageRegion(x=1, y=2, w=20)
             iiif.ImageRegion(percent=True)
+            iiif.ImageRegion().set_options(percent=True, x=1)
 
             # TODO: type checking? (not yet implemented)
+
+        with pytest.raises(iiif.ParseError):
+            iiif.ImageRegion().parse('1,2')
 
     def test_render(self):
         region = iiif.ImageRegion(full=True)
@@ -470,7 +497,6 @@ class TestImageSize:
         with pytest.raises(iiif.ParseError):
             size.parse('pct:')
             size.parse('one,two')
-
 
 class TestImageRotation:
 

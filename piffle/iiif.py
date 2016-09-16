@@ -583,6 +583,8 @@ class IIIFImageClient(object):
 
         # info request
         if path_basename == 'info.json':
+            # NOTE: this is unlikely to happen; more likely, if information is
+            # missing, we will misinterpret the api endpoint or the image id
             if len(path_components) < 1:
                 raise ParseError('Invalid IIIF image information url: %s'
                                     % url)
