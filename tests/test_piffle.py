@@ -251,6 +251,20 @@ class TestIIIFImageClient:
             assert img.image_width == sample_image_info['width']
             assert img.image_height == sample_image_info['height']
 
+    def test_canonicalize(self):
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+        square_img_info = sample_image_info.copy()
+        square_img_info.update({'height': 100, 'width': 100})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=square_img_info):
+            # square region for square image = full
+            img.region.parse('square')
+            # percentage: convert to w,h (= 25,25)
+            img.size.parse('pct:25')
+            img.rotation.parse('90.0')
+            assert unicode(img.canonicalize()) == \
+                '%s/%s/full/25,25/90/default.jpg' % (api_endpoint, image_id)
+
 
 class TestImageRegion:
 
@@ -498,6 +512,49 @@ class TestImageSize:
             size.parse('pct:')
             size.parse('one,two')
 
+    def test_canonicalize(self):
+        # any canonicalization that requires image dimensions to calculate
+        # should raise an error
+        size = iiif.ImageSize()
+        size.parse(',5')
+        with pytest.raises(iiif.IIIFImageClientException):
+            size.canonicalize()
+
+        img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
+        # full to full - trivial canonicalization
+        img.size.canonicalize()
+        assert unicode(img.size) == 'full'
+
+        # test sizes with square image size
+        square_img_info = sample_image_info.copy()
+        square_img_info.update({'height': 100, 'width': 100})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=square_img_info):
+            # requested as ,h - convert to w,
+            img.size.parse(',50')
+            img.size.canonicalize()
+            assert unicode(img.size) == '50,'
+
+            # percentage: convert to w,h
+            img.size.parse('pct:25')
+            img.size.canonicalize()
+            assert unicode(img.size) == '25,25'
+
+            # exact
+            img.size.parse('!50,50')
+            img.size.canonicalize()
+            assert unicode(img.size) == '50,50'
+
+        # test sizes with rectangular image size
+        rect_img_info = sample_image_info.copy()
+        rect_img_info.update({'width': 50, 'height': 100})
+        with patch.object(iiif.IIIFImageClient, 'image_info',
+                          new=rect_img_info):
+            img.size.parse('!50,50')
+            img.size.canonicalize()
+            assert unicode(img.size) == '25,50'
+
+
 class TestImageRotation:
 
     def test_defaults(self):
@@ -515,11 +572,21 @@ class TestImageRotation:
         assert rotation.as_dict()['mirrored'] is True
 
     def test_render(self):
-        rotation = iiif.ImageRotation()
-        assert unicode(rotation) == '0'
-        rotation = iiif.ImageRotation(degrees=90)
-        assert unicode(rotation) == '90'
+        assert unicode(iiif.ImageRotation()) == '0'
+        assert unicode(iiif.ImageRotation(degrees=90)) == '90'
         rotation = iiif.ImageRotation(degrees=95, mirrored=True)
+        assert unicode(rotation) == '!95'
+
+        # canonicalization
+        # - trim any trailing zeros in a decimal value
+        assert unicode(iiif.ImageRotation(degrees=93.0)) == '93'
+        # - leading zero if less than 1
+        assert unicode(iiif.ImageRotation(degrees=0.05)) == '0.05'
+        # - ! if mirrored, followed by integer if possible
+        rotation = iiif.ImageRotation(degrees=95.00, mirrored=True)
+        assert unicode(rotation) == '!95'
+        # explicitly test canonicalize method, even though it does nothing
+        rotation.canonicalize()
         assert unicode(rotation) == '!95'
 
     def test_parse(self):

@@ -162,8 +162,8 @@ class ImageRegion(object):
         self.options.update({'x': x, 'y': y, 'width': width, 'height': height})
 
     def canonicalize(self):
-        # canonicalize the current region options so that
-        # serialization results in canonical format.
+        '''Canonicalize the current region options so that
+        serialization results in canonical format.'''
         # From the spec:
         #   “full” if the whole image is requested, (including a “square”
         #    region of a square image), otherwise the x,y,w,h syntax.
@@ -366,6 +366,70 @@ class ImageSize(object):
         except ValueError:
             raise ParseError('Error parsing size: %s' % size)
 
+    def canonicalize(self):
+        '''Canonicalize the current size options so that
+        serialization results in canonical format.'''
+        # From the spec:
+        #   “full” if the default size is requested,
+        #   the w, syntax for images that should be scaled maintaining the
+        #   aspect ratio, and the w,h syntax for explicit sizes that change
+        #   the aspect ratio.
+        #   Note: The size keyword “full” will be replaced with “max” in
+        #   version 3.0
+
+        if self.options['full']:
+            # nothing to do
+            return
+
+        # possbly an error here for every other case if self.img is not set,
+        # since it's probably not possible to canonicalize without knowing
+        # image size  (any exceptions?)
+        if self.img is None:
+            raise IIIFImageClientException('Cannot canonicalize without image')
+
+        if self.options['percent']:
+            # convert percentage to w,h
+            scale = self.options['percent'] / 100
+            self.options.update({
+                'height': int(self.img.image_height * scale),
+                'width': int(self.img.image_width * scale),
+                'percent': None,
+            })
+            return
+
+        if self.options['exact']:
+            # from the spec:
+            #   The image content is scaled for the best fit such that the
+            #   resulting width and height are less than or equal to the
+            #   requested width and height. The exact scaling may be determined
+            #   by the service provider, based on characteristics including
+            #   image quality and system performance. The dimensions of the
+            #   returned image content are calculated to maintain the aspect
+            #   ratio of the extracted region.
+
+            # determine which edge results in a smaller scale
+            wscale = float(self.options['width']) / float(self.img.image_width)
+            hscale = float(self.options['height']) / float(self.img.image_height)
+            scale = min(wscale, hscale)
+            # use that scale on original image size, to preserve
+            # original aspect ratio
+            self.options.update({
+                'exact': False,
+                'height': int(scale * self.img.image_height),
+                'width': int(scale * self.img.image_width)
+            })
+            return
+
+        # if height only is specified (,h), convert to width only (w,)
+        if self.options['height'] and self.options['width'] is None:
+            # determine the scale in use, and convert from
+            # height only to width only
+            scale = float(self.options['height']) / float(self.img.image_height)
+            self.options.update({
+                'height': None,
+                'width': int(scale * self.img.image_width)
+            })
+
 
 class ImageRotation(object):
     '''IIIF Image rotation Intended to be used with :class:`IIIFImageClient`.
@@ -433,6 +497,17 @@ class ImageRotation(object):
 
         # rotation allows float
         self.options['degrees'] = float(rotation)
+
+    def canonicalize(self):
+        '''Canonicalize the current region options so that
+        serialization results in canonical format.'''
+        # NOTE: explicitly including a canonicalize as a method to make it
+        # clear that this field supports canonicalization, but no work
+        # is needed since the existing render does the right things:
+        # - trim any trailing zeros in a decimal value
+        # - leading zero if less than 1
+        # - ! if mirrored, followed by integer if possible
+        return
 
 
 class IIIFImageClient(object):
@@ -562,6 +637,14 @@ class IIIFImageClient(object):
             raise IIIFImageClientException('Image format %s unknown' % image_format)
         img = self.get_copy()
         img.image_options['fmt'] = image_format
+        return img
+
+    def canonicalize(self):
+        '''Canonicalize the URI'''
+        img = self.get_copy()
+        img.region.canonicalize()
+        img.size.canonicalize()
+        img.rotation.canonicalize()
         return img
 
     @classmethod
