@@ -407,6 +407,13 @@ class TestImageRegion:
             img.region.canonicalize()
             assert unicode(img.region) == '10,1,50,75'
 
+            # percentages should be converted to integers
+            img.region.parse('pct:10,1,50.5,75.3')
+            assert unicode(img.region) == 'pct:10,1,50.5,75.3'
+            img.region.canonicalize()
+            assert unicode(img.region) == '10,1,50,75'
+
+
         # test with square with non-square image size
         tall_img_info = sample_image_info.copy()
         tall_img_info.update({'width': 100, 'height': 150})

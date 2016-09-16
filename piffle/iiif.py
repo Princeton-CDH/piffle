@@ -228,10 +228,10 @@ class ImageRegion(object):
             # convert percentages to dimensions based on image size
             self.options.update({
                 'percent': False,
-                'x': (self.options['x']/100) * self.img.image_width,
-                'y': (self.options['y']/100) * self.img.image_height,
-                'width': (self.options['width']/100) * self.img.image_width,
-                'height': (self.options['height']/100) * self.img.image_height
+                'x': int((self.options['x']/100) * self.img.image_width),
+                'y': int((self.options['y']/100) * self.img.image_height),
+                'width': int((self.options['width']/100) * self.img.image_width),
+                'height': int((self.options['height']/100) * self.img.image_height)
             })
             return
 
