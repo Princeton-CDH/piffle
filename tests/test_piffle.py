@@ -20,7 +20,7 @@ VALID_URLS = {
 INVALID_URLS = {
     'info': 'http://img1/info.json',
     'simple': 'http://imgserver.co/img1/foobar/default.jpg',
-    'complex': 'http://imgserver.co/img1/2560,2560,256,256/256,/!90/default.jpg',
+    'complex': 'http://imgserver.co/img1/2560,2560,256,/256,/!90/default.jpg',
     'bad_size': '%s/%s/full/a,/0/default.jpg' % (api_endpoint, image_id),
     'bad_region': '%s/%s/200,200/full/0/default.jpg' % (api_endpoint, image_id)
 }
@@ -189,10 +189,15 @@ class TestIIIFImageClient:
         # malformed
         with pytest.raises(iiif.ParseError):
             img = iiif.IIIFImageClient.init_from_url(INVALID_URLS['info'])
+        with pytest.raises(iiif.ParseError):
             iiif.IIIFImageClient.init_from_url(INVALID_URLS['simple'])
+        with pytest.raises(iiif.ParseError):
             iiif.IIIFImageClient.init_from_url(INVALID_URLS['complex'])
+        with pytest.raises(iiif.ParseError):
             iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_size'])
+        with pytest.raises(iiif.ParseError):
             iiif.IIIFImageClient.init_from_url(INVALID_URLS['bad_region'])
+        with pytest.raises(iiif.ParseError):
             iiif.IIIFImageClient.init_from_url('http://info.json')
 
     def test_as_dicts(self):
@@ -371,6 +376,7 @@ class TestImageRegion:
         # invalid or incomplete region strings
         with pytest.raises(iiif.ParseError):
             region.parse('pct:1,3,')
+        with pytest.raises(iiif.ParseError):
             region.parse('one,two,three,four')
 
     def test_canonicalize(self):
@@ -517,6 +523,7 @@ class TestImageSize:
         # invalid or incomplete size strings
         with pytest.raises(iiif.ParseError):
             size.parse('pct:')
+        with pytest.raises(iiif.ParseError):
             size.parse('one,two')
 
     def test_canonicalize(self):

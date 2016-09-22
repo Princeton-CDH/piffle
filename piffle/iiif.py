@@ -659,7 +659,11 @@ class IIIFImageClient(object):
         # first parse as a url
         parsed_url = urlparse(url)
         # then split the path on slashes
-        path_components = parsed_url.path.split('/')
+        # and remove any empty strings
+        path_components = [path for path in parsed_url.path.split('/') if path]
+        if not path_components:
+            raise ParseError('Invalid IIIF image url: %s'
+                                % url)
         # pop off last portion of the url to determine if this is an info url
         path_basename = path_components.pop()
         opts = {}
