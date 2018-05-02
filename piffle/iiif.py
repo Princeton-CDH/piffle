@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from collections import OrderedDict
-from urlparse import urlparse
+from future.utils import python_2_unicode_compatible
+import six
+from six.moves.urllib.parse import urlparse
 
 from cached_property import cached_property
 import requests
@@ -24,6 +26,7 @@ class ParseError(IIIFImageClientException):
 # validating options (and could add option type checking)
 
 
+@python_2_unicode_compatible
 class ImageRegion(object):
     '''IIIF Image region. Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and region options.
@@ -78,7 +81,7 @@ class ImageRegion(object):
 
     def set_options(self, **options):
         '''Update region options.  Same parameters as initialiation.'''
-        allowed_options = self.options.keys()
+        allowed_options = list(self.options.keys())
         # error if an unrecoganized option is specified
         for key in options:
             if key not in allowed_options:
@@ -106,7 +109,7 @@ class ImageRegion(object):
         '''Return region options as a dictionary'''
         return self.options
 
-    def __unicode__(self):
+    def __str__(self):
         '''Render region information in IIIF region format'''
         if self.options['full']:
             return 'full'
@@ -236,6 +239,7 @@ class ImageRegion(object):
             return
 
 
+@python_2_unicode_compatible
 class ImageSize(object):
     '''IIIF Image Size.  Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and size options.
@@ -292,7 +296,7 @@ class ImageSize(object):
 
     def set_options(self, **options):
         '''Update size options.  Same parameters as initialiation.'''
-        allowed_options = self.options.keys()
+        allowed_options = list(self.options.keys())
         # error if an unrecoganized option is specified
         for key in options:
             if key not in allowed_options:
@@ -312,7 +316,7 @@ class ImageSize(object):
         '''Return size options as a dictionary'''
         return self.options
 
-    def __unicode__(self):
+    def __str__(self):
         if self.options['full']:
             return 'full'
         if self.options['max']:
@@ -431,6 +435,7 @@ class ImageSize(object):
             })
 
 
+@python_2_unicode_compatible
 class ImageRotation(object):
     '''IIIF Image rotation Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and rotation options.
@@ -483,7 +488,7 @@ class ImageRotation(object):
         '''Return rotation options as a dictionary'''
         return self.options
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s%g' % ('!' if self.options['mirrored'] else '',
                          self.options['degrees'])
 
@@ -491,7 +496,7 @@ class ImageRotation(object):
         # reset to defaults before parsing
         self.options = self.rotation_defaults.copy()
 
-        if rotation.startswith('!'):
+        if str(rotation).startswith('!'):
             self.options['mirrored'] = True
             rotation = rotation.lstrip('!')
 
@@ -510,6 +515,7 @@ class ImageRotation(object):
         return
 
 
+@python_2_unicode_compatible
 class IIIFImageClient(object):
     '''Simple IIIF Image API client for generating IIIF image urls
     in an object-oriented, pythonic fashion.  Can be extended,
@@ -574,19 +580,16 @@ class IIIFImageClient(object):
         'Image id to be used in contructing urls'
         return self.image_id
 
-    def __unicode__(self):
+    def __str__(self):
         info = self.image_options.copy()
         info.update({
             'endpoint': self.api_endpoint,
             'id': self.get_image_id(),
-            'region': unicode(self.region),
-            'size': unicode(self.size),
-            'rot': unicode(self.rotation)
+            'region': six.text_type(self.region),
+            'size': six.text_type(self.size),
+            'rot': six.text_type(self.rotation)
         })
         return '%(endpoint)s/%(id)s/%(region)s/%(size)s/%(rot)s/%(quality)s.%(fmt)s' % info
-
-    def __str__(self):
-        return str(unicode(self))
 
     def __repr__(self):
         return '<IIIFImageClient %s>' % self.get_image_id()
