@@ -268,7 +268,7 @@ class TestIIIFImageClient:
             # percentage: convert to w,h (= 25,25)
             img.size.parse('pct:25')
             img.rotation.parse('90.0')
-            assert unicode(img.canonicalize()) == \
+            assert six.text_type(img.canonicalize()) == \
                 '%s/%s/full/25,25/90/default.jpg' % (api_endpoint, image_id)
 
 
@@ -391,13 +391,13 @@ class TestImageRegion:
         img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
         # full to full - trivial canonicalization
         img.region.canonicalize()
-        assert unicode(img.region) == 'full'
+        assert six.text_type(img.region) == 'full'
         # x,y,w,h should be preserved as is
         dimensions = '0,0,200,250'
         img.region.parse(dimensions)
         img.region.canonicalize()
         # round trip, should be the same
-        assert unicode(img.region) == dimensions
+        assert six.text_type(img.region) == dimensions
 
         # test with square image size
         square_img_info = sample_image_info.copy()
@@ -407,18 +407,18 @@ class TestImageRegion:
             # square requested, image is square = full
             img.region.parse('square')
             img.region.canonicalize()
-            assert unicode(img.region) == 'full'
+            assert six.text_type(img.region) == 'full'
 
             # percentages
             img.region.parse('pct:10,1,50,75')
             img.region.canonicalize()
-            assert unicode(img.region) == '10,1,50,75'
+            assert six.text_type(img.region) == '10,1,50,75'
 
             # percentages should be converted to integers
             img.region.parse('pct:10,1,50.5,75.3')
-            assert unicode(img.region) == 'pct:10,1,50.5,75.3'
+            assert six.text_type(img.region) == 'pct:10,1,50.5,75.3'
             img.region.canonicalize()
-            assert unicode(img.region) == '10,1,50,75'
+            assert six.text_type(img.region) == '10,1,50,75'
 
 
         # test with square with non-square image size
@@ -429,7 +429,7 @@ class TestImageRegion:
             # square requested, should convert to x,y,w,h
             img.region.parse('square')
             img.region.canonicalize()
-            assert unicode(img.region) == '0,25,100,100'
+            assert six.text_type(img.region) == '0,25,100,100'
 
         wide_img_info = sample_image_info.copy()
         wide_img_info.update({'width': 200, 'height': 50})
@@ -439,7 +439,7 @@ class TestImageRegion:
             img.region.parse('square')
             img.region.canonicalize()
 
-            assert unicode(img.region) == '75,0,50,50'
+            assert six.text_type(img.region) == '75,0,50,50'
 
 
 class TestImageSize:
@@ -538,7 +538,7 @@ class TestImageSize:
         img = iiif.IIIFImageClient.init_from_url(VALID_URLS['simple'])
         # full to full - trivial canonicalization
         img.size.canonicalize()
-        assert unicode(img.size) == 'full'
+        assert six.text_type(img.size) == 'full'
 
         # test sizes with square image size
         square_img_info = sample_image_info.copy()
@@ -548,17 +548,17 @@ class TestImageSize:
             # requested as ,h - convert to w,
             img.size.parse(',50')
             img.size.canonicalize()
-            assert unicode(img.size) == '50,'
+            assert six.text_type(img.size) == '50,'
 
             # percentage: convert to w,h
             img.size.parse('pct:25')
             img.size.canonicalize()
-            assert unicode(img.size) == '25,25'
+            assert six.text_type(img.size) == '25,25'
 
             # exact
             img.size.parse('!50,50')
             img.size.canonicalize()
-            assert unicode(img.size) == '50,50'
+            assert six.text_type(img.size) == '50,50'
 
         # test sizes with rectangular image size
         rect_img_info = sample_image_info.copy()
@@ -567,7 +567,7 @@ class TestImageSize:
                           new=rect_img_info):
             img.size.parse('!50,50')
             img.size.canonicalize()
-            assert unicode(img.size) == '25,50'
+            assert six.text_type(img.size) == '25,50'
 
 
 class TestImageRotation:
@@ -596,15 +596,15 @@ class TestImageRotation:
 
         # canonicalization
         # - trim any trailing zeros in a decimal value
-        assert unicode(iiif.ImageRotation(degrees=93.0)) == '93'
+        assert six.text_type(iiif.ImageRotation(degrees=93.0)) == '93'
         # - leading zero if less than 1
-        assert unicode(iiif.ImageRotation(degrees=0.05)) == '0.05'
+        assert six.text_type(iiif.ImageRotation(degrees=0.05)) == '0.05'
         # - ! if mirrored, followed by integer if possible
         rotation = iiif.ImageRotation(degrees=95.00, mirrored=True)
-        assert unicode(rotation) == '!95'
+        assert six.text_type(rotation) == '!95'
         # explicitly test canonicalize method, even though it does nothing
         rotation.canonicalize()
-        assert unicode(rotation) == '!95'
+        assert six.text_type(rotation) == '!95'
 
     def test_parse(self):
         rotation = iiif.ImageRotation()
