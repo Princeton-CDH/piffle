@@ -26,6 +26,7 @@ CLASSIFIERS = [
 ]
 
 test_requirements = ["pytest>=3.6", "pytest-cov"]
+dev_requirements = ["pre-commit"]
 
 setup(
     name="piffle",
@@ -38,7 +39,7 @@ setup(
     install_requires=["requests", "cached-property", "attrdict"],
     setup_requires=["pytest-runner"],
     tests_require=test_requirements,
-    extras_require={"test": test_requirements},
+    extras_require={"test": test_requirements, "dev": dev_requirements},
     description="Python library for generating IIIF Image API urls",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
