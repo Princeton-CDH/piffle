@@ -11,3 +11,7 @@ repos:
       - id: black
         # Assumes that your shell's `python` command is linked to python3.6+
         language_version: python
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.27.0
+    hooks:
+      - id: check-github-workflows
