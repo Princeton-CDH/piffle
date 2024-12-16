@@ -1,30 +1,31 @@
+from __future__ import annotations
+
 from unittest.mock import patch
+
 import pytest
 import requests
 
 from piffle import image
-
 
 api_endpoint = "http://imgserver.co"
 image_id = "img1"
 
 # test iiif image urls
 VALID_URLS = {
-    "info": "%s/%s/info.json" % (api_endpoint, image_id),
+    "info": f"{api_endpoint}/{image_id}/info.json",
     # longer api endpoint path
-    "info-loris": "%s/loris/%s/info.json" % (api_endpoint, image_id),
-    "simple": "%s/%s/full/full/0/default.jpg" % (api_endpoint, image_id),
-    "complex": "%s/%s/2560,2560,256,256/256,/!90/default.jpg"
-    % (api_endpoint, image_id),
-    "exact": "%s/%s/full/!256,256/0/default.jpg" % (api_endpoint, image_id),
+    "info-loris": f"{api_endpoint}/loris/{image_id}/info.json",
+    "simple": f"{api_endpoint}/{image_id}/full/full/0/default.jpg",
+    "complex": f"{api_endpoint}/{image_id}/2560,2560,256,256/256,/!90/default.jpg",
+    "exact": f"{api_endpoint}/{image_id}/full/!256,256/0/default.jpg",
 }
 
 INVALID_URLS = {
     "info": "http://img1/info.json",
     "simple": "http://imgserver.co/img1/foobar/default.jpg",
     "complex": "http://imgserver.co/img1/2560,2560,256,/256,/!90/default.jpg",
-    "bad_size": "%s/%s/full/a,/0/default.jpg" % (api_endpoint, image_id),
-    "bad_region": "%s/%s/200,200/full/0/default.jpg" % (api_endpoint, image_id),
+    "bad_size": f"{api_endpoint}/{image_id}/full/a,/0/default.jpg",
+    "bad_region": f"{api_endpoint}/{image_id}/200,200/full/0/default.jpg",
 }
 
 sample_image_info = {
@@ -43,9 +44,9 @@ class TestIIIFImageClient:
     def test_defaults(self):
         img = get_test_imgclient()
         # default image url
-        assert "%s/%s/full/full/0/default.jpg" % (api_endpoint, image_id) == str(img)
+        assert f"{api_endpoint}/{image_id}/full/full/0/default.jpg" == str(img)
         # info url
-        assert "%s/%s/info.json" % (api_endpoint, image_id) == str(img.info())
+        assert f"{api_endpoint}/{image_id}/info.json" == str(img.info())
 
     def test_outputs(self):
         img = get_test_imgclient()
@@ -85,52 +86,40 @@ class TestIIIFImageClient:
         img = get_test_imgclient()
         width, height, percent = 100, 150, 50
         # width only
-        assert "%s/%s/full/%s,/0/default.jpg" % (api_endpoint, image_id, width) == str(
+        assert f"{api_endpoint}/{image_id}/full/{width},/0/default.jpg" == str(
             img.size(width=width)
         )
 
         # height only
-        assert "%s/%s/full/,%s/0/default.jpg" % (api_endpoint, image_id, height) == str(
+        assert f"{api_endpoint}/{image_id}/full/,{height}/0/default.jpg" == str(
             img.size(height=height)
         )
         # width and height
-        assert "%s/%s/full/%s,%s/0/default.jpg" % (
-            api_endpoint,
-            image_id,
-            width,
-            height,
-        ) == str(img.size(width=width, height=height))
+        assert f"{api_endpoint}/{image_id}/full/{width},{height}/0/default.jpg" == str(
+            img.size(width=width, height=height)
+        )
         # exact width and height
-        assert "%s/%s/full/!%s,%s/0/default.jpg" % (
-            api_endpoint,
-            image_id,
-            width,
-            height,
-        ) == str(img.size(width=width, height=height, exact=True))
+        assert f"{api_endpoint}/{image_id}/full/!{width},{height}/0/default.jpg" == str(
+            img.size(width=width, height=height, exact=True)
+        )
         # percent
-        assert "%s/%s/full/pct:%s/0/default.jpg" % (
-            api_endpoint,
-            image_id,
-            percent,
-        ) == str(img.size(percent=percent))
+        assert f"{api_endpoint}/{image_id}/full/pct:{percent}/0/default.jpg" == str(
+            img.size(percent=percent)
+        )
 
     def test_region(self):
         # region options passed through to region object and output
         img = get_test_imgclient()
         x, y, width, height = 5, 10, 100, 150
-        assert "%s/%s/%s,%s,%s,%s/full/0/default.jpg" % (
-            api_endpoint,
-            image_id,
-            x,
-            y,
-            width,
-            height,
-        ) == str(img.region(x=x, y=y, width=width, height=height))
+        assert (
+            f"{api_endpoint}/{image_id}/{x},{y},{width},{height}/full/0/default.jpg"
+            == str(img.region(x=x, y=y, width=width, height=height))
+        )
 
     def test_rotation(self):
         # rotation options passed through to region object and output
         img = get_test_imgclient()
-        assert "%s/%s/full/full/90/default.jpg" % (api_endpoint, image_id) == str(
+        assert f"{api_endpoint}/{image_id}/full/full/90/default.jpg" == str(
             img.rotation(degrees=90)
         )
         with pytest.raises(image.IIIFImageClientException):
@@ -152,59 +141,38 @@ class TestIIIFImageClient:
         img = get_test_imgclient()
         width = 100
         fmt = "png"
-        assert "%s/%s/full/%s,/0/default.%s" % (
-            api_endpoint,
-            image_id,
-            width,
-            fmt,
-        ) == str(img.size(width=width).format(fmt))
+        assert f"{api_endpoint}/{image_id}/full/{width},/0/default.{fmt}" == str(
+            img.size(width=width).format(fmt)
+        )
 
         img = get_test_imgclient()
         x, y, width, height = 5, 10, 100, 150
-        assert "%s/%s/%s,%s,%s,%s/full/0/default.%s" % (
-            api_endpoint,
-            image_id,
-            x,
-            y,
-            width,
-            height,
-            fmt,
-        ) == str(img.region(x=x, y=y, width=width, height=height).format(fmt))
+        assert (
+            f"{api_endpoint}/{image_id}/{x},{y},{width},{height}/full/0/default.{fmt}"
+            == str(img.region(x=x, y=y, width=width, height=height).format(fmt))
+        )
 
-        assert "%s/%s/%s,%s,%s,%s/%s,/0/default.%s" % (
-            api_endpoint,
-            image_id,
-            x,
-            y,
-            width,
-            height,
-            width,
-            fmt,
-        ) == str(
-            img.size(width=width)
-            .region(x=x, y=y, width=width, height=height)
-            .format(fmt)
+        assert (
+            f"{api_endpoint}/{image_id}/{x},{y},{width},{height}/{width},/0/default.{fmt}"
+            == str(
+                img.size(width=width)
+                .region(x=x, y=y, width=width, height=height)
+                .format(fmt)
+            )
         )
         rotation = 90
-        assert "%s/%s/%s,%s,%s,%s/%s,/%s/default.%s" % (
-            api_endpoint,
-            image_id,
-            x,
-            y,
-            width,
-            height,
-            width,
-            rotation,
-            fmt,
-        ) == str(
-            img.size(width=width)
-            .region(x=x, y=y, width=width, height=height)
-            .rotation(degrees=90)
-            .format(fmt)
+        assert (
+            f"{api_endpoint}/{image_id}/{x},{y},{width},{height}/{width},/{rotation}/default.{fmt}"
+            == str(
+                img.size(width=width)
+                .region(x=x, y=y, width=width, height=height)
+                .rotation(degrees=90)
+                .format(fmt)
+            )
         )
 
         # original image object should be unchanged, and still show defaults
-        assert "%s/%s/full/full/0/default.jpg" % (api_endpoint, image_id) == str(img)
+        assert f"{api_endpoint}/{image_id}/full/full/0/default.jpg" == str(img)
 
     def test_init_from_url(self):
         # well-formed
@@ -217,7 +185,7 @@ class TestIIIFImageClient:
         assert img.api_endpoint == api_endpoint
         # -info with more complex endpoint base url
         img = image.IIIFImageClient.init_from_url(VALID_URLS["info-loris"])
-        assert img.api_endpoint == "%s/loris" % api_endpoint
+        assert img.api_endpoint == f"{api_endpoint}/loris"
         # - image
         img = image.IIIFImageClient.init_from_url(VALID_URLS["simple"])
         assert isinstance(img, image.IIIFImageClient)
@@ -286,7 +254,6 @@ class TestIIIFImageClient:
         # error response
         mockresponse.status_code = 400
         img = image.IIIFImageClient.init_from_url(VALID_URLS["simple"])
-        img.image_info
         mockresponse.raise_for_status.assert_called_with()
 
     def test_image_width_height(self):
@@ -306,9 +273,9 @@ class TestIIIFImageClient:
             # percentage: convert to w,h (= 25,25)
             img.size.parse("pct:25")
             img.rotation.parse("90.0")
-            assert str(img.canonicalize()) == "%s/%s/full/25,25/90/default.jpg" % (
-                api_endpoint,
-                image_id,
+            assert (
+                str(img.canonicalize())
+                == f"{api_endpoint}/{image_id}/full/25,25/90/default.jpg"
             )
 
 
@@ -389,7 +356,7 @@ class TestImageRegion:
         assert region.as_dict()["square"] is True
         # region
         x, y, w, h = [5, 7, 100, 200]
-        region_str = "%d,%d,%d,%d" % (x, y, w, h)
+        region_str = f"{x},{y},{w},{h}"
         region.parse(region_str)
         assert str(region) == region_str  # round trip
         region_opts = region.as_dict()
@@ -400,7 +367,7 @@ class TestImageRegion:
         assert region_opts["width"] == w
         assert region_opts["height"] == h
         # percentage region
-        region_str = "pct:%d,%d,%d,%d" % (x, y, w, h)
+        region_str = f"pct:{x},{y},{w},{h}"
         region.parse(region_str)
         assert str(region) == region_str  # round trip
         region_opts = region.as_dict()
@@ -538,7 +505,7 @@ class TestImageSize:
         assert size.as_dict()["max"] is True
         # width and height
         w, h = [100, 200]
-        size_str = "%d,%d" % (w, h)
+        size_str = f"{w}, {h}"
         size.parse(size_str)
         assert str(size) == size_str  # round trip
         size_opts = size.as_dict()

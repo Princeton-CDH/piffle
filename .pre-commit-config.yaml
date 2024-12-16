@@ -1,17 +1,19 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.0.270
+    rev: v0.8.3
     hooks:
       - id: ruff
-        args: [ --fix, --exit-non-zero-on-fix ]
+        args: [ --fix]
+
   - repo: https://github.com/psf/black
-    rev: 23.3.0 # Replace by any tag/version: https://github.com/psf/black/tags
+    rev: 24.10.0 # Replace by any tag/version: https://github.com/psf/black/tags
     hooks:
       - id: black
         # Assumes that your shell's `python` command is linked to python3.6+
         language_version: python
+
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.27.0
+    rev: 0.30.0
     hooks:
       - id: check-github-workflows

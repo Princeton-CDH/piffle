@@ -1,11 +1,12 @@
 # iiifclient
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
+# -*- coding: utf-8 -*-
 from collections import OrderedDict
 from urllib.parse import urlparse
 
-from cached_property import cached_property
 import requests
+from cached_property import cached_property
 
 
 class IIIFImageClientException(Exception):
@@ -22,7 +23,7 @@ class ParseError(IIIFImageClientException):
 # validating options (and could add option type checking)
 
 
-class ImageRegion(object):
+class ImageRegion:
     """IIIF Image region. Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and region options.
 
@@ -82,7 +83,7 @@ class ImageRegion(object):
         # error if an unrecoganized option is specified
         for key in options:
             if key not in allowed_options:
-                raise IIIFImageClientException("Unknown option: %s" % key)
+                raise IIIFImageClientException(f"Unknown option: {key}")
 
         # error if some but not all coordinates are specified
         # or if percentage is specified but not all coordinates are present
@@ -112,9 +113,9 @@ class ImageRegion(object):
         if self.options["square"]:
             return "square"
 
-        coords = "%(x)g,%(y)g,%(width)g,%(height)g" % self.options
+        coords = "{x:g},{y:g},{width:g},{height:g}".format(**self.options)
         if self.options["percent"]:
-            return "pct:%s" % coords
+            return f"pct:{coords}"
 
         return coords
 
@@ -152,10 +153,10 @@ class ImageRegion(object):
                 coords = [int(region_c) for region_c in region.split(",")]
         except ValueError:
             # failure converting to integer or float
-            raise ParseError("Invalid region coordinates: %s" % region)
+            raise ParseError(f"Invalid region coordinates: {region}")
 
         if len(coords) != 4:
-            raise ParseError("Invalid region coordinates: %s" % region)
+            raise ParseError(f"Invalid region coordinates: {region}")
 
         x, y, width, height = coords
         self.options.update({"x": x, "y": y, "width": width, "height": height})
@@ -240,7 +241,7 @@ class ImageRegion(object):
             return
 
 
-class ImageSize(object):
+class ImageSize:
     """IIIF Image Size.  Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and size options.
 
@@ -302,7 +303,7 @@ class ImageSize(object):
         # error if an unrecoganized option is specified
         for key in options:
             if key not in allowed_options:
-                raise IIIFImageClientException("Unknown option: %s" % key)
+                raise IIIFImageClientException(f"Unknown option: {key}")
 
         # TODO: do we need to type checking? bool/int/float?
 
@@ -323,11 +324,11 @@ class ImageSize(object):
         if self.options["max"]:
             return "max"
         if self.options["percent"]:
-            return "pct:%g" % self.options["percent"]
+            return "pct:{:g}".format(self.options["percent"])
 
-        size = "%s,%s" % (self.options["width"] or "", self.options["height"] or "")
+        size = "{},{}".format(self.options["width"] or "", self.options["height"] or "")
         if self.options["exact"]:
-            return "!%s" % size
+            return f"!{size}"
         return size
 
     def parse(self, size):
@@ -353,7 +354,7 @@ class ImageSize(object):
                 self.options["percent"] = float(size.split(":")[1])
                 return
             except ValueError:
-                raise ParseError("Error parsing size: %s" % size)
+                raise ParseError(f"Error parsing size: {size}")
 
         # exact?
         if size.startswith("!"):
@@ -368,7 +369,7 @@ class ImageSize(object):
             if height != "":
                 self.options["height"] = int(height)
         except ValueError:
-            raise ParseError("Error parsing size: %s" % size)
+            raise ParseError(f"Error parsing size: {size}")
 
     def canonicalize(self):
         """Canonicalize the current size options so that
@@ -438,7 +439,7 @@ class ImageSize(object):
             )
 
 
-class ImageRotation(object):
+class ImageRotation:
     """IIIF Image rotation Intended to be used with :class:`IIIFImageClient`.
     Can be initialized with related image object and rotation options.
 
@@ -479,7 +480,7 @@ class ImageRotation(object):
         # error if an unrecoganized option is specified
         for key in options:
             if key not in allowed_options:
-                raise IIIFImageClientException("Unknown option: %s" % key)
+                raise IIIFImageClientException(f"Unknown option: {key}")
 
         # TODO: do we need to type checking? bool/int/float?
 
@@ -490,7 +491,7 @@ class ImageRotation(object):
         return self.options
 
     def __str__(self):
-        return "%s%g" % (
+        return "{}{:g}".format(
             "!" if self.options["mirrored"] else "",
             self.options["degrees"],
         )
@@ -518,7 +519,7 @@ class ImageRotation(object):
         return
 
 
-class IIIFImageClient(object):
+class IIIFImageClient:
     """Simple IIIF Image API client for generating IIIF image urls
      in an object-oriented, pythonic fashion.  Can be extended,
      when custom logic is needed to set the image id.  Provides
@@ -601,20 +602,15 @@ class IIIFImageClient(object):
                 "rot": str(self.rotation),
             }
         )
-        return (
-            "%(endpoint)s/%(id)s/%(region)s/%(size)s/%(rot)s/%(quality)s.%(fmt)s" % info
-        )
+        return "{endpoint}/{id}/{region}/{size}/{rot}/{quality}.{fmt}".format(**info)
 
     def __repr__(self):
-        return "<IIIFImageClient %s>" % self.get_image_id()
+        return f"<IIIFImageClient {self.get_image_id()}>"
         # include non-defaults?
 
     def info(self):
         "JSON info url"
-        return "%(endpoint)s/%(id)s/info.json" % {
-            "endpoint": self.api_endpoint,
-            "id": self.get_image_id(),
-        }
+        return f"{self.api_endpoint}/{self.get_image_id()}/info.json"
 
     @cached_property
     def image_info(self):
@@ -650,7 +646,7 @@ class IIIFImageClient(object):
     def format(self, image_format):
         "Set output image format"
         if image_format not in self.allowed_formats:
-            raise IIIFImageClientException("Image format %s unknown" % image_format)
+            raise IIIFImageClientException(f"Image format {image_format} unknown")
         img = self.get_copy()
         img.image_options["fmt"] = image_format
         return img
@@ -678,7 +674,7 @@ class IIIFImageClient(object):
         # and remove any empty strings
         path_components = [path for path in parsed_url.path.split("/") if path]
         if not path_components:
-            raise ParseError("Invalid IIIF image url: %s" % url)
+            raise ParseError(f"Invalid IIIF image url: {url}")
         # pop off last portion of the url to determine if this is an info url
         path_basename = path_components.pop()
         opts = {}
@@ -688,14 +684,14 @@ class IIIFImageClient(object):
             # NOTE: this is unlikely to happen; more likely, if information is
             # missing, we will misinterpret the api endpoint or the image id
             if len(path_components) < 1:
-                raise ParseError("Invalid IIIF image information url: %s" % url)
+                raise ParseError(f"Invalid IIIF image information url: {url}")
             image_id = path_components.pop()
 
         # image request
         else:
             # check for enough IIIF parameters
             if len(path_components) < 4:
-                raise ParseError("Invalid IIIF image request: %s" % url)
+                raise ParseError(f"Invalid IIIF image request: {url}")
 
             # pop off url portions as they are used so we can easily
             # make use of leftover path to reconstruct the api endpoint
@@ -718,7 +714,7 @@ class IIIFImageClient(object):
         # portions of the url path are leftover
         # remove empty strings from the remaining path components
         path_components = [p for p in path_components if p]
-        api_endpoint = "%s://%s/%s" % (
+        api_endpoint = "{}://{}/{}".format(
             parsed_url.scheme,
             parsed_url.netloc,
             "/".join(path_components) if path_components else "",
