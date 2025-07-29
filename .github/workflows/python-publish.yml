@@ -1,5 +1,5 @@
 # This workflows will upload a Python Package using Twine when a release is created
-# For more information see: https://help.github.com/en/actions/language-and-framework-guides/using-python-with-github-actions#publishing-to-package-registries
+# For more information see: https://github.com/pypa/gh-action-pypi-publish/tree/v1.12.4
 
 name: Upload Python Package
 
@@ -7,9 +7,8 @@ on:
   # normal behavior: run when a new release is created
   release:
     types: [created]
-  # allow running manually on main
+  # allow running manually
   workflow_dispatch:
-    branches: [main]
 
 permissions:
   contents: read
@@ -20,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/viapy/
+      url: https://pypi.org/project/piffle
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
 
