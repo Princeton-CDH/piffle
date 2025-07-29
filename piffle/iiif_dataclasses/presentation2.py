@@ -11,6 +11,7 @@ from .dataclass_utils import parse_item
 
 @dataclass()
 class IIIFPresentation2(IIIF2):
+    @property
     def first_label(self):
         label = self.label
 

@@ -18,6 +18,7 @@ class IIIFPresentation3(IIIF3):
         except GeoreferencingError:
             return parse_item(item, Annotation3)
 
+    @property
     def first_label(self):
         label = self.label
 
