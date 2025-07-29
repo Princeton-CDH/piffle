@@ -5,8 +5,7 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from piffle.presentation import IIIFPresentation, IIIFException
-
+from piffle.presentation import IIIFException, IIIFPresentation
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
 
