@@ -251,7 +251,10 @@ class TestIIIFImageClient:
 
         # error response
         mockresponse.status_code = 400
+        mockresponse.raise_for_status.side_effect = requests.HTTPError()
         img = image.IIIFImageClient.init_from_url(VALID_URLS["simple"])
+        with pytest.raises(requests.HTTPError):
+            img.image_info  # reset cached info
         mockresponse.raise_for_status.assert_called_with()
 
     def test_image_width_height(self):
@@ -503,7 +506,7 @@ class TestImageSize:
         assert size.as_dict()["max"] is True
         # width and height
         w, h = [100, 200]
-        size_str = f"{w}, {h}"
+        size_str = f"{w},{h}"
         size.parse(size_str)
         assert str(size) == size_str  # round trip
         size_opts = size.as_dict()
