@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..load_iiif import load_iiif_presentation
 from .base import IIIF2, OtherMetadataDict
 from .dataclass_utils import parse_item
 
@@ -11,6 +12,47 @@ from .dataclass_utils import parse_item
 
 @dataclass()
 class IIIFPresentation2(IIIF2):
+    @staticmethod
+    def load(id: str) -> IIIFPresentation2:
+        """
+        Load a IIIF Presentation 2 object from a file or uri.
+
+        Parameters
+        ----------
+        id : str
+            The uri or filepath of the IIIF Presentation 2.
+
+        Returns
+        -------
+        IIIFPresentation2
+            The loaded IIIF Presentation 2 object.
+        """
+        return load_iiif_presentation(id, presentation_version=2)
+
+    @staticmethod
+    def from_file(path: str) -> IIIFPresentation2:
+        """Load a IIIF Presentation 2 object from a file."""
+        print(
+            "[WARNING] `IIIFPresentation2.from_file` is deprecated. Use `IIIFPresentation2.load` instead."
+        )
+        return load_iiif_presentation(path, presentation_version=2)
+
+    @staticmethod
+    def from_url(uri: str) -> IIIFPresentation2:
+        """Load a IIIF Presentation 2 object from a URL."""
+        print(
+            "[WARNING] `IIIFPresentation2.from_url` is deprecated. Use `IIIFPresentation2.load` instead."
+        )
+        return load_iiif_presentation(uri, presentation_version=2)
+
+    @staticmethod
+    def from_file_or_url(id: str) -> IIIFPresentation2:
+        """Load a IIIF Presentation 2 object from a file or URL."""
+        print(
+            "[WARNING] `IIIFPresentation2.from_file_or_url` is deprecated. Use `IIIFPresentation2.load` instead."
+        )
+        return load_iiif_presentation(id, presentation_version=2)
+
     @property
     def first_label(self):
         label = self.label

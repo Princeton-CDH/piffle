@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..load_iiif import load_iiif_presentation
 from .base import IIIF3, OtherMetadataDict
 from .dataclass_utils import GeoreferencingError, parse_item
 
@@ -11,6 +12,47 @@ from .dataclass_utils import GeoreferencingError, parse_item
 
 @dataclass()
 class IIIFPresentation3(IIIF3):
+    @staticmethod
+    def load(id: str) -> IIIFPresentation3:
+        """
+        Load a IIIF Presentation 3 object from a file or uri.
+
+        Parameters
+        ----------
+        id : str
+            The uri or filepath of the IIIF Presentation 3.
+
+        Returns
+        -------
+        IIIFPresentation3
+            The loaded IIIF Presentation 3 object.
+        """
+        return load_iiif_presentation(id, presentation_version=3)
+
+    @staticmethod
+    def from_file(path: str) -> IIIFPresentation3:
+        """Load a IIIF Presentation 3 object from a file."""
+        print(
+            "[WARNING] `IIIFPresentation3.from_file` is deprecated. Use `IIIFPresentation3.load` instead."
+        )
+        return load_iiif_presentation(path, presentation_version=3)
+
+    @staticmethod
+    def from_url(uri: str) -> IIIFPresentation3:
+        """Load a IIIF Presentation 3 object from a URL."""
+        print(
+            "[WARNING] `IIIFPresentation3.from_url` is deprecated. Use `IIIFPresentation3.load` instead."
+        )
+        return load_iiif_presentation(uri, presentation_version=3)
+
+    @staticmethod
+    def from_file_or_url(id: str) -> IIIFPresentation3:
+        """Load a IIIF Presentation 3 object from a file or URL."""
+        print(
+            "[WARNING] `IIIFPresentation3.from_file_or_url` is deprecated. Use `IIIFPresentation3.load` instead."
+        )
+        return load_iiif_presentation(id, presentation_version=3)
+
     @staticmethod
     def parse_annotation(item: Any):
         try:

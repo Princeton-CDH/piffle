@@ -12,7 +12,6 @@ from piffle.iiif_dataclasses.presentation3 import (
     GeoreferenceAnnotation3,
     IIIFPresentation3,
 )
-from piffle.load_iiif import load_iiif_presentation
 from piffle.utils import IIIFException, format_manifest
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
@@ -22,7 +21,7 @@ class TestIIIFPresentation:
     test_manifest = os.path.join(FIXTURE_DIR, "chto-manifest.json")
 
     def test_from_file(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert isinstance(pres, IIIFPresentation2)
         assert pres.type == "sc:Manifest"
 
@@ -34,7 +33,7 @@ class TestIIIFPresentation:
             mockresponse = mock_get.return_value
             mockresponse.status_code = requests.codes.ok
             mockresponse.json.return_value = data
-            pres = load_iiif_presentation(manifest_url, 2)
+            pres = IIIFPresentation2.load(manifest_url)
             assert pres.type == "sc:Manifest"
             mock_get.assert_called_with(manifest_url)
 
@@ -43,7 +42,7 @@ class TestIIIFPresentation:
             with pytest.raises(IIIFException) as excinfo:
                 mockresponse.status_code = requests.codes.forbidden
                 mockresponse.reason = "Forbidden"
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "Error retrieving manifest" in str(excinfo.value)
             assert "403 Forbidden" in str(excinfo.value)
 
@@ -55,7 +54,7 @@ class TestIIIFPresentation:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "No JSON found" in str(excinfo.value)
 
             # json parsing error
@@ -65,18 +64,19 @@ class TestIIIFPresentation:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "Error parsing JSON" in str(excinfo.value)
 
     def test_short_id(self):
-        assert load_iiif_presentation(self.test_manifest, 2).short_id() == "ph415q7581"
+        manifest_uri = self.test_manifest
+        assert IIIFPresentation2.load(manifest_uri).short_id == "ph415q7581"
 
         # TODO: replace this with a canvas json file saved to fixtures
         # canvas_uri = "https://ii.if/resources/p0c484h74c/manifest/canvas/ps7527b878"
-        # assert load_iiif_presentation(canvas_uri, 2).short_id() == "ps7527b878"
+        # assert IIIFPresentation2.load(canvas_uri).short_id == "ps7527b878"
 
     def test_toplevel_attrs(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert pres.context == "http://iiif.io/api/presentation/2/context.json"
         assert (
             pres.id
@@ -88,7 +88,7 @@ class TestIIIFPresentation:
         assert pres.viewingDirection == "left-to-right"
 
     def test_nested_attrs(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert isinstance(pres.sequences, list)
         assert (
             pres.sequences[0].id
@@ -102,7 +102,7 @@ class TestIIIFPresentation:
         )
 
     def test_set(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         pres.test_attribute = "test value"
         pres.label = "New title"
         pres.type = "sc:Collection"
@@ -111,7 +111,7 @@ class TestIIIFPresentation:
         assert pres.type == "sc:Collection"
 
     def test_del(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
 
         assert hasattr(pres, "label")  # this one has a label
         del pres.label
@@ -137,7 +137,7 @@ class TestIIIFPresentation:
             pres.type
 
     def test_first_label(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert pres.first_label == pres.label[0]
         pres.label = "unlisted single title"
         assert pres.first_label == pres.label
@@ -147,7 +147,7 @@ class TestIIIFPresentation2:
     test_manifest = os.path.join(FIXTURE_DIR, "manifest2.json")
 
     def test_from_file(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert isinstance(pres, IIIFPresentation2)
         assert isinstance(pres, Manifest2)
         assert pres.type == "sc:Manifest"
@@ -160,7 +160,7 @@ class TestIIIFPresentation2:
             mockresponse = mock_get.return_value
             mockresponse.status_code = requests.codes.ok
             mockresponse.json.return_value = data
-            pres = load_iiif_presentation(manifest_url, 2)
+            pres = IIIFPresentation2.load(manifest_url)
             assert pres.type == "sc:Manifest"
             mock_get.assert_called_with(manifest_url)
 
@@ -169,7 +169,7 @@ class TestIIIFPresentation2:
             with pytest.raises(IIIFException) as excinfo:
                 mockresponse.status_code = requests.codes.forbidden
                 mockresponse.reason = "Forbidden"
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "Error retrieving manifest" in str(excinfo.value)
             assert "403 Forbidden" in str(excinfo.value)
 
@@ -181,7 +181,7 @@ class TestIIIFPresentation2:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "No JSON found" in str(excinfo.value)
 
             # json parsing error
@@ -191,21 +191,18 @@ class TestIIIFPresentation2:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 2)
+                IIIFPresentation2.load(manifest_url)
             assert "Error parsing JSON" in str(excinfo.value)
 
     def test_short_id(self):
-        assert (
-            load_iiif_presentation(self.test_manifest, 2).short_id()
-            == "sanborn00003_001"
-        )
+        assert IIIFPresentation2.load(self.test_manifest).short_id == "sanborn00003_001"
 
         # TODO: replace this with a canvas json file saved to fixtures
         # canvas_uri = "https://ii.if/resources/p0c484h74c/manifest/canvas/ps7527b878"
-        # assert load_iiif_presentation(canvas_uri, 2).short_id() == "ps7527b878"
+        # assert IIIFPresentation2.load(canvas_uri).short_id == "ps7527b878"
 
     def test_toplevel_attrs(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert pres.context == "http://iiif.io/api/presentation/2/context.json"
         assert pres.id == "https://www.loc.gov/item/sanborn00003_001/manifest.json"
         assert pres.type == "sc:Manifest"
@@ -217,7 +214,7 @@ class TestIIIFPresentation2:
         assert pres.viewingDirection == "left-to-right"
 
     def test_nested_attrs(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert isinstance(pres.sequences, list)
         assert pres.sequences[0].id is None
         assert pres.sequences[0].type == "sc:Sequence"
@@ -228,7 +225,7 @@ class TestIIIFPresentation2:
         )
 
     def test_set(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         pres.test_attribute = "test value"
         pres.label = "New title"
         pres.type = "sc:Collection"
@@ -237,7 +234,7 @@ class TestIIIFPresentation2:
         assert pres.type == "sc:Collection"
 
     def test_del(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
 
         assert hasattr(pres, "label")  # this one has a label
         del pres.label
@@ -254,7 +251,7 @@ class TestIIIFPresentation2:
             pres.type
 
     def test_first_label(self):
-        pres = load_iiif_presentation(self.test_manifest, 2)
+        pres = IIIFPresentation2.load(self.test_manifest)
         assert (
             pres.first_label
             == "Sanborn Fire Insurance Map from Albertville, Marshall County, Alabama."
@@ -271,20 +268,20 @@ class TestIIIFPresentation3:
     test_annotation_page = os.path.join(FIXTURE_DIR, "annotationpage3.json")
 
     def test_annotation_from_file(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, Annotation3)
         assert pres.type == "Annotation"
 
     def test_georeference_annotation_from_file(self):
-        pres = load_iiif_presentation(self.test_georeference_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_georeference_annotation)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, Annotation3)
         assert isinstance(pres, GeoreferenceAnnotation3)
         assert pres.type == "GeoreferenceAnnotation"
 
     def test_annotation_page_from_file(self):
-        pres = load_iiif_presentation(self.test_annotation_page, 3)
+        pres = IIIFPresentation3.load(self.test_annotation_page)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, AnnotationPage3)
         assert pres.type == "AnnotationPage"
@@ -297,7 +294,7 @@ class TestIIIFPresentation3:
             mockresponse = mock_get.return_value
             mockresponse.status_code = requests.codes.ok
             mockresponse.json.return_value = data
-            pres = load_iiif_presentation(manifest_url, 3)
+            pres = IIIFPresentation3.load(manifest_url)
             assert pres.type == "Annotation"
             mock_get.assert_called_with(manifest_url)
 
@@ -306,7 +303,7 @@ class TestIIIFPresentation3:
             with pytest.raises(IIIFException) as excinfo:
                 mockresponse.status_code = requests.codes.forbidden
                 mockresponse.reason = "Forbidden"
-                load_iiif_presentation(manifest_url, 3)
+                IIIFPresentation3.load(manifest_url)
             assert "Error retrieving manifest" in str(excinfo.value)
             assert "403 Forbidden" in str(excinfo.value)
 
@@ -318,7 +315,7 @@ class TestIIIFPresentation3:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 3)
+                IIIFPresentation3.load(manifest_url)
             assert "No JSON found" in str(excinfo.value)
 
             # json parsing error
@@ -328,25 +325,20 @@ class TestIIIFPresentation3:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                load_iiif_presentation(manifest_url, 3)
+                IIIFPresentation3.load(manifest_url)
             assert "Error parsing JSON" in str(excinfo.value)
 
     def test_annotation_short_id(self):
         assert (
-            load_iiif_presentation(self.test_annotation, 3).short_id()
-            == "5cf13f6681d355e3"
+            IIIFPresentation3.load(self.test_annotation).short_id == "5cf13f6681d355e3"
         )
-
-        # TODO: replace this with a canvas json file saved to fixtures
-        # canvas_uri = "https://ii.if/resources/p0c484h74c/manifest/canvas/ps7527b878"
-        # assert load_iiif_presentation(canvas_uri, 2).short_id() == "ps7527b878"
 
     def test_annotation_page_short_id(self):
         with pytest.raises(AttributeError):
-            load_iiif_presentation(self.test_annotation_page, 3).short_id()
+            IIIFPresentation3.load(self.test_annotation_page).short_id
 
     def test_annotation_toplevel_attrs(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
         assert pres.context == [
             "http://iiif.io/api/extension/georef/1/context.json",
             "http://iiif.io/api/presentation/3/context.json",
@@ -358,14 +350,14 @@ class TestIIIFPresentation3:
         assert pres.label is None
 
     def test_annotation_page_toplevel_attrs(self):
-        pres = load_iiif_presentation(self.test_annotation_page, 3)
+        pres = IIIFPresentation3.load(self.test_annotation_page)
         assert pres.context == "http://www.w3.org/ns/anno.jsonld"
         assert pres.type == "AnnotationPage"
         assert pres.id is None
         assert pres.label is None
 
     def test_annotation_nested_attrs(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
         assert isinstance(pres.body, dict)
         assert pres.body["type"] == "FeatureCollection"
         assert pres.body["transformation"] == {
@@ -381,7 +373,7 @@ class TestIIIFPresentation3:
         }
 
     def test_annotation_page_nested_attrs(self):
-        pres = load_iiif_presentation(self.test_annotation_page, 3)
+        pres = IIIFPresentation3.load(self.test_annotation_page)
         assert isinstance(pres.items, list)
         assert isinstance(pres.items[0], GeoreferenceAnnotation3)
         assert (
@@ -406,14 +398,14 @@ class TestIIIFPresentation3:
         }
 
     def test_set(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
         pres.label = "New title"
         pres.type = "sc:Collection"
         assert pres.label == "New title"
         assert pres.type == "sc:Collection"
 
     def test_del(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
 
         # label value is None but is still in the dict
         assert hasattr(pres, "label")
@@ -432,7 +424,7 @@ class TestIIIFPresentation3:
             pres.type
 
     def test_first_label(self):
-        pres = load_iiif_presentation(self.test_annotation, 3)
+        pres = IIIFPresentation3.load(self.test_annotation)
         pres.first_label is None
         pres.label = ["first title", "second title"]
         assert pres.first_label == pres.label[0]

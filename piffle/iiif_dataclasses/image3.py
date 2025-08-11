@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..load_iiif import load_iiif_image
 from .base import IIIF3, OtherMetadataDict
 
 ## IIIF Image 3
@@ -10,7 +11,46 @@ from .base import IIIF3, OtherMetadataDict
 
 @dataclass()
 class IIIFImage3(IIIF3):
-    pass
+    @staticmethod
+    def load(id: str) -> Image3:
+        """
+        Load a IIIF Image 3 object from a file or uri.
+
+        Parameters
+        ----------
+        id : str
+            The uri or filepath of the IIIF Image 3.
+
+        Returns
+        -------
+        Image3
+            The loaded IIIF Image 3 object.
+        """
+        return load_iiif_image(id, image_version=3)
+
+    @staticmethod
+    def from_file(path: str) -> Image3:
+        """Load an IIIF Image 3 object from a file."""
+        print(
+            "[WARNING] `IIIFImage3.from_file` is deprecated. Use `IIIFImage3.load` instead."
+        )
+        return load_iiif_image(path, image_version=3)
+
+    @staticmethod
+    def from_url(uri: str) -> Image3:
+        """Load an IIIF Image 3 object from a URL."""
+        print(
+            "[WARNING] `IIIFImage3.from_url` is deprecated. Use `IIIFImage3.load` instead."
+        )
+        return load_iiif_image(uri, image_version=3)
+
+    @staticmethod
+    def from_file_or_url(id: str) -> Image3:
+        """Load an IIIF Image 3 object from a file or URL."""
+        print(
+            "[WARNING] `IIIFImage3.from_file_or_url` is deprecated. Use `IIIFImage3.load` instead."
+        )
+        return load_iiif_image(id, image_version=3)
 
 
 @dataclass()

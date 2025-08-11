@@ -34,6 +34,7 @@ class IIIFBase:
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
             )
 
+    @property
     def short_id(self):
         """Generate a short id from full manifest/canvas uri identifiers
         for use in local urls.  Logic is based on the recommended
@@ -56,9 +57,13 @@ class IIIFBase:
 
 @dataclass()
 class IIIF3(IIIFBase):
+    """Base class for IIIF 3.0 objects."""
+
     pass
 
 
 @dataclass()
 class IIIF2(IIIFBase):
+    """Base class for IIIF 2.0 objects."""
+
     pass
