@@ -20,8 +20,13 @@ FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
 class TestIIIFPresentation:
     test_manifest = os.path.join(FIXTURE_DIR, "chto-manifest.json")
 
-    def test_from_file(self):
+    def test_load(self):
         pres = IIIFPresentation2.load(self.test_manifest)
+        assert isinstance(pres, IIIFPresentation2)
+        assert pres.type == "sc:Manifest"
+
+    def test_from_file(self):
+        pres = IIIFPresentation2.from_file(self.test_manifest)
         assert isinstance(pres, IIIFPresentation2)
         assert pres.type == "sc:Manifest"
 
@@ -33,7 +38,7 @@ class TestIIIFPresentation:
             mockresponse = mock_get.return_value
             mockresponse.status_code = requests.codes.ok
             mockresponse.json.return_value = data
-            pres = IIIFPresentation2.load(manifest_url)
+            pres = IIIFPresentation2.from_url(manifest_url)
             assert pres.type == "sc:Manifest"
             mock_get.assert_called_with(manifest_url)
 
@@ -42,7 +47,7 @@ class TestIIIFPresentation:
             with pytest.raises(IIIFException) as excinfo:
                 mockresponse.status_code = requests.codes.forbidden
                 mockresponse.reason = "Forbidden"
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "Error retrieving manifest" in str(excinfo.value)
             assert "403 Forbidden" in str(excinfo.value)
 
@@ -54,7 +59,7 @@ class TestIIIFPresentation:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "No JSON found" in str(excinfo.value)
 
             # json parsing error
@@ -64,7 +69,7 @@ class TestIIIFPresentation:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "Error parsing JSON" in str(excinfo.value)
 
     def test_short_id(self):
@@ -146,8 +151,14 @@ class TestIIIFPresentation:
 class TestIIIFPresentation2:
     test_manifest = os.path.join(FIXTURE_DIR, "manifest2.json")
 
-    def test_from_file(self):
+    def test_load(self):
         pres = IIIFPresentation2.load(self.test_manifest)
+        assert isinstance(pres, IIIFPresentation2)
+        assert isinstance(pres, Manifest2)
+        assert pres.type == "sc:Manifest"
+
+    def test_from_file(self):
+        pres = IIIFPresentation2.from_file(self.test_manifest)
         assert isinstance(pres, IIIFPresentation2)
         assert isinstance(pres, Manifest2)
         assert pres.type == "sc:Manifest"
@@ -160,7 +171,7 @@ class TestIIIFPresentation2:
             mockresponse = mock_get.return_value
             mockresponse.status_code = requests.codes.ok
             mockresponse.json.return_value = data
-            pres = IIIFPresentation2.load(manifest_url)
+            pres = IIIFPresentation2.from_url(manifest_url)
             assert pres.type == "sc:Manifest"
             mock_get.assert_called_with(manifest_url)
 
@@ -169,7 +180,7 @@ class TestIIIFPresentation2:
             with pytest.raises(IIIFException) as excinfo:
                 mockresponse.status_code = requests.codes.forbidden
                 mockresponse.reason = "Forbidden"
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "Error retrieving manifest" in str(excinfo.value)
             assert "403 Forbidden" in str(excinfo.value)
 
@@ -181,7 +192,7 @@ class TestIIIFPresentation2:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "No JSON found" in str(excinfo.value)
 
             # json parsing error
@@ -191,7 +202,7 @@ class TestIIIFPresentation2:
                 mockresponse.json.side_effect = json.decoder.JSONDecodeError(
                     "err", "doc", 1
                 )
-                IIIFPresentation2.load(manifest_url)
+                IIIFPresentation2.from_url(manifest_url)
             assert "Error parsing JSON" in str(excinfo.value)
 
     def test_short_id(self):
@@ -267,21 +278,40 @@ class TestIIIFPresentation3:
     )
     test_annotation_page = os.path.join(FIXTURE_DIR, "annotationpage3.json")
 
-    def test_annotation_from_file(self):
+    def test_annotation_load(self):
         pres = IIIFPresentation3.load(self.test_annotation)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, Annotation3)
         assert pres.type == "Annotation"
 
-    def test_georeference_annotation_from_file(self):
+    def test_annotation_from_file(self):
+        pres = IIIFPresentation3.from_file(self.test_annotation)
+        assert isinstance(pres, IIIFPresentation3)
+        assert isinstance(pres, Annotation3)
+        assert pres.type == "Annotation"
+
+    def test_georeference_annotation_load(self):
         pres = IIIFPresentation3.load(self.test_georeference_annotation)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, Annotation3)
         assert isinstance(pres, GeoreferenceAnnotation3)
         assert pres.type == "GeoreferenceAnnotation"
 
-    def test_annotation_page_from_file(self):
+    def test_georeference_annotation_from_file(self):
+        pres = IIIFPresentation3.from_file(self.test_georeference_annotation)
+        assert isinstance(pres, IIIFPresentation3)
+        assert isinstance(pres, Annotation3)
+        assert isinstance(pres, GeoreferenceAnnotation3)
+        assert pres.type == "GeoreferenceAnnotation"
+
+    def test_annotation_page_load(self):
         pres = IIIFPresentation3.load(self.test_annotation_page)
+        assert isinstance(pres, IIIFPresentation3)
+        assert isinstance(pres, AnnotationPage3)
+        assert pres.type == "AnnotationPage"
+
+    def test_annotation_page_from_file(self):
+        pres = IIIFPresentation3.from_file(self.test_annotation_page)
         assert isinstance(pres, IIIFPresentation3)
         assert isinstance(pres, AnnotationPage3)
         assert pres.type == "AnnotationPage"
