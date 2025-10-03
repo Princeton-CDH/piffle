@@ -9,7 +9,7 @@ class OtherMetadataDict(dict):
     pass
 
 
-@dataclass()
+@dataclass
 class IIIFBase:
     def __getattribute__(self, name):
         try:
@@ -55,14 +55,14 @@ class IIIFBase:
         return id.split("/")[-1]
 
 
-@dataclass()
+@dataclass
 class IIIF3(IIIFBase):
     """Base class for IIIF 3.0 objects."""
 
     pass
 
 
-@dataclass()
+@dataclass
 class IIIF2(IIIFBase):
     """Base class for IIIF 2.0 objects."""
 

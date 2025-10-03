@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .utils import get_manifest, load_manifest
+from piffle.utils import get_manifest, load_manifest
 
 
 class UnknownClassError(ValueError):

@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..load_iiif import load_iiif_presentation
-from .base import IIIF2, OtherMetadataDict
-from .dataclass_utils import parse_item
+from piffle.iiif_dataclasses.base import IIIF2, OtherMetadataDict
+from piffle.iiif_dataclasses.dataclass_utils import parse_item
+from piffle.load_iiif import load_iiif_presentation
+
+log = logging.getLogger(__name__)
 
 ## IIIF Presentation 2
 
 
-@dataclass()
+@dataclass
 class IIIFPresentation2(IIIF2):
     @staticmethod
     def load(id: str) -> IIIFPresentation2:
@@ -32,24 +35,24 @@ class IIIFPresentation2(IIIF2):
     @staticmethod
     def from_file(path: str) -> IIIFPresentation2:
         """Load a IIIF Presentation 2 object from a file."""
-        print(
-            "[WARNING] `IIIFPresentation2.from_file` is deprecated. Use `IIIFPresentation2.load` instead."
+        log.warning(
+            "`IIIFPresentation2.from_file` is deprecated. Use `IIIFPresentation2.load` instead."
         )
         return load_iiif_presentation(path, presentation_version=2)
 
     @staticmethod
     def from_url(uri: str) -> IIIFPresentation2:
         """Load a IIIF Presentation 2 object from a URL."""
-        print(
-            "[WARNING] `IIIFPresentation2.from_url` is deprecated. Use `IIIFPresentation2.load` instead."
+        log.warning(
+            "`IIIFPresentation2.from_url` is deprecated. Use `IIIFPresentation2.load` instead."
         )
         return load_iiif_presentation(uri, presentation_version=2)
 
     @staticmethod
     def from_file_or_url(id: str) -> IIIFPresentation2:
         """Load a IIIF Presentation 2 object from a file or URL."""
-        print(
-            "[WARNING] `IIIFPresentation2.from_file_or_url` is deprecated. Use `IIIFPresentation2.load` instead."
+        log.warning(
+            "`IIIFPresentation2.from_file_or_url` is deprecated. Use `IIIFPresentation2.load` instead."
         )
         return load_iiif_presentation(id, presentation_version=2)
 
@@ -58,7 +61,7 @@ class IIIFPresentation2(IIIF2):
         label = self.label
 
         if label is None:
-            print("[WARNING] No label found in IIIF Presentation 2 object.")
+            log.warning("No label found in IIIF Presentation 2 object.")
             return None
 
         # label can be a string or list of strings
@@ -68,7 +71,7 @@ class IIIFPresentation2(IIIF2):
             return label[0]
 
 
-@dataclass()
+@dataclass
 class Annotation2(IIIFPresentation2):
     context: Any
     id: Any
@@ -87,9 +90,9 @@ class Annotation2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] Annotation is missing 'id' field.")
+            log.warning("Annotation is missing 'id' field.")
         if type is None:
-            print("[WARNING] Annotation is missing 'type' field.")
+            log.warning("Annotation is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -105,7 +108,7 @@ class Annotation2(IIIFPresentation2):
         return self.resource["service"]["id"]
 
 
-@dataclass()
+@dataclass
 class AnnotationList2(IIIFPresentation2):
     context: Any
     id: Any
@@ -122,9 +125,9 @@ class AnnotationList2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] AnnotationList is missing 'id' field.")
+            log.warning("AnnotationList is missing 'id' field.")
         if type is None:
-            print("[WARNING] AnnotationList is missing 'type' field.")
+            log.warning("AnnotationList is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -139,7 +142,7 @@ class AnnotationList2(IIIFPresentation2):
         return annotations
 
 
-@dataclass()
+@dataclass
 class Canvas2(IIIFPresentation2):
     context: Any
     id: Any
@@ -158,9 +161,9 @@ class Canvas2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] Canvas is missing 'id' field.")
+            log.warning("Canvas is missing 'id' field.")
         if type is None:
-            print("[WARNING] Canvas is missing 'type' field.")
+            log.warning("Canvas is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -180,11 +183,11 @@ class Canvas2(IIIFPresentation2):
             try:
                 annotations += content.collect_annotations()
             except Exception as e:
-                print(f"[WARNING] Failed to collect annotations from content: {e}")
+                log.warning(f"Failed to collect annotations from content: {e}")
         return annotations
 
 
-@dataclass()
+@dataclass
 class Range2(IIIFPresentation2):
     context: Any
     id: Any
@@ -204,11 +207,11 @@ class Range2(IIIFPresentation2):
     ):
 
         if context is None:
-            print("[WARNING] Range is missing 'context' field.")
+            log.warning("Range is missing 'context' field.")
         if id is None:
-            print("[WARNING] Range is missing 'id' field.")
+            log.warning("Range is missing 'id' field.")
         if type is None:
-            print("[WARNING] Range is missing 'type' field.")
+            log.warning("Range is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -224,7 +227,7 @@ class Range2(IIIFPresentation2):
         return annotations
 
 
-@dataclass()
+@dataclass
 class Sequence2(IIIFPresentation2):
     context: Any
     id: Any
@@ -241,9 +244,9 @@ class Sequence2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] Sequence is missing 'id' field.")
+            log.warning("Sequence is missing 'id' field.")
         if type is None:
-            print("[WARNING] Sequence is missing 'type' field.")
+            log.warning("Sequence is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -258,7 +261,7 @@ class Sequence2(IIIFPresentation2):
         return annotations
 
 
-@dataclass()
+@dataclass
 class Manifest2(IIIFPresentation2):
     context: Any
     id: Any
@@ -281,9 +284,9 @@ class Manifest2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] Manifest is missing 'id' field.")
+            log.warning("Manifest is missing 'id' field.")
         if type is None:
-            print("[WARNING] Manifest is missing 'type' field.")
+            log.warning("Manifest is missing 'type' field.")
 
         self.context = context
         self.id = id
@@ -303,12 +306,12 @@ class Manifest2(IIIFPresentation2):
             try:
                 annotations += structure.collect_annotations()
             except Exception as e:
-                print(f"[WARNING] Failed to collect annotations from structure: {e}")
+                log.warning(f"Failed to collect annotations from structure: {e}")
 
         return annotations
 
 
-@dataclass()
+@dataclass
 class Collection2(IIIFPresentation2):
     context: Any
     id: Any
@@ -329,9 +332,9 @@ class Collection2(IIIFPresentation2):
         **kwargs,
     ):
         if id is None:
-            print("[WARNING] Collection is missing 'id' field.")
+            log.warning("Collection is missing 'id' field.")
         if type is None:
-            print("[WARNING] Collection is missing 'type' field.")
+            log.warning("Collection is missing 'type' field.")
 
         self.context = context
         self.id = id

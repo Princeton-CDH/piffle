@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..load_iiif import load_iiif_image
-from .base import IIIF2, OtherMetadataDict
+from piffle.iiif_dataclasses.base import IIIF2, OtherMetadataDict
+from piffle.load_iiif import load_iiif_image
+
+log = logging.getLogger(__name__)
 
 ## IIIF Image 2
 
 
-@dataclass()
+@dataclass
 class IIIFImage2(IIIF2):
     @staticmethod
     def load(id: str) -> Image2:
@@ -31,29 +34,29 @@ class IIIFImage2(IIIF2):
     @staticmethod
     def from_file(path: str) -> Image2:
         """Load an IIIF Image 2 object from a file."""
-        print(
-            "[WARNING] `IIIFImage2.from_file` is deprecated. Use `IIIFImage2.load` instead."
+        log.warning(
+            "`IIIFImage2.from_file` is deprecated. Use `IIIFImage2.load` instead."
         )
         return load_iiif_image(path, image_version=2)
 
     @staticmethod
     def from_url(uri: str) -> Image2:
         """Load an IIIF Image 2 object from a URL."""
-        print(
-            "[WARNING] `IIIFImage2.from_url` is deprecated. Use `IIIFImage2.load` instead."
+        log.warning(
+            "`IIIFImage2.from_url` is deprecated. Use `IIIFImage2.load` instead."
         )
         return load_iiif_image(uri, image_version=2)
 
     @staticmethod
     def from_file_or_url(id: str) -> Image2:
         """Load an IIIF Image 2 object from a file or URL."""
-        print(
-            "[WARNING] `IIIFImage2.from_file_or_url` is deprecated. Use `IIIFImage2.load` instead."
+        log.warning(
+            "`IIIFImage2.from_file_or_url` is deprecated. Use `IIIFImage2.load` instead."
         )
         return load_iiif_image(id, image_version=2)
 
 
-@dataclass()
+@dataclass
 class Image2(IIIFImage2):
     context: Any
     id: Any
@@ -88,17 +91,17 @@ class Image2(IIIFImage2):
         **kwargs,
     ):
         if context is None:
-            print("[WARNING] Image is missing 'context' field.")
+            log.warning("Image is missing 'context' field.")
         if id is None:
-            print("[WARNING] Image is missing 'id' field.")
+            log.warning("Image is missing 'id' field.")
         if protocol is None:
-            print("[WARNING] Image is missing 'protocol' field.")
+            log.warning("Image is missing 'protocol' field.")
         if width is None:
-            print("[WARNING] Image is missing 'width' field.")
+            log.warning("Image is missing 'width' field.")
         if height is None:
-            print("[WARNING] Image is missing 'height' field.")
+            log.warning("Image is missing 'height' field.")
         if profile is None:
-            print("[WARNING] Image is missing 'profile' field.")
+            log.warning("Image is missing 'profile' field.")
 
         self.context = context
         self.id = id
