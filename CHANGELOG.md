@@ -1,5 +1,12 @@
 # Change & Version Information
 
+## 0.7.0
+
+* Add dataclasses for parsing IIIF Presentation and Image APIs.
+* Now supports IIIF Pressentation API version 3.
+* Adds `load_iiif_image` and `load_iiif_presentation` functions for loading IIIF into dataclasses.
+* Adds tests for new functionality.
+
 ## 0.6.1
 
 * Add explicit support for and testing against python 3.13 (thanks to @rettinghaus)
