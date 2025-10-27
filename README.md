@@ -3,7 +3,6 @@
 Python library for generating and parsing [IIIF Image API](http://iiif.io/api/image/2.1/) URLs in an
 object-oriented, pythonic fashion.
 
-
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13308491.svg)](https://doi.org/10.5281/zenodo.13308491)
 [![unit tests](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml)
 [![codecov](https://codecov.io/gh/Princeton-CDH/piffle/branch/main/graph/badge.svg)](https://codecov.io/gh/Princeton-CDH/piffle)
@@ -104,6 +103,17 @@ Or configure your git to always ignore styling revision commits:
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
-## Publishing python packages
+### Publishing python packages
 
 A new python package is automatically built and published to [PyPI](https://pypi.python.org/pypi) using a GitHub Actions workflow when a new release is created on GitHub.
+
+## License
+
+**piffle** is distributed under the Apache 2.0 License.
+
+## Contributors
+
+- Rebecca Sutton Koeser
+- Graham Hukill
+- Rosie Wood
+- Klaus Rettinghaus
