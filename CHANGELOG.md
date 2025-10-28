@@ -1,5 +1,17 @@
 # Change & Version Information
 
+## 0.7.0
+
+*experimental* new dataclass interfaces in `piffle.iiif_dataclasses` thanks to @rwood-97
+
+  * Add dataclasses for parsing IIIF Presentation and Image APIs.
+    * New `collect_annotations` method to collect annotations on a presentation
+  * Now supports IIIF Presentation API and Image API version 3.
+  * Adds `load_iiif_image` and `load_iiif_presentation` functions for loading IIIF into dataclasses.
+  
+**NOTE**: new dataclasses do not yet replace the existing default API;
+interface and package structure may change in future releases.
+
 ## 0.6.1
 
 * Add explicit support for and testing against python 3.13 (thanks to @rettinghaus)

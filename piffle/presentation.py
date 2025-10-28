@@ -3,7 +3,6 @@ import os.path
 import urllib
 
 import addict
-
 import requests
 
 
@@ -19,7 +18,7 @@ class AtDict(addict.Dict):
     def _key(self, key):
         # convert key to @key if in the list of fields that requires it
         if key in self.at_fields:
-            key = "@%s" % key
+            key = f"@{key}"
         return key
 
     def __missing__(self, key):
@@ -96,13 +95,12 @@ class IIIFPresentation(AtDict):
                 # if json fails, two possibilities:
                 # - we didn't actually get json (e.g. redirect for auth)
                 if "application/json" not in response.headers["content-type"]:
-                    raise IIIFException("No JSON found at %s" % uri)
+                    raise IIIFException(f"No JSON found at {uri}")
                 # - there is something wrong with the json
-                raise IIIFException("Error parsing JSON for %s: %s" % (uri, err))
+                raise IIIFException(f"Error parsing JSON for {uri}: {err}")
 
         raise IIIFException(
-            "Error retrieving manifest at %s: %s %s"
-            % (uri, response.status_code, response.reason)
+            f"Error retrieving manifest at {uri}: {response.status_code} {response.reason}"
         )
 
     @classmethod
@@ -118,7 +116,7 @@ class IIIFPresentation(AtDict):
         elif cls.is_url(path):
             return cls.from_url(path)
         else:
-            raise IIIFException("File not found: %s" % path)
+            raise IIIFException(f"File not found: {path}")
 
     @classmethod
     def short_id(cls, uri):

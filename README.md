@@ -3,12 +3,10 @@
 Python library for generating and parsing [IIIF Image API](http://iiif.io/api/image/2.1/) URLs in an
 object-oriented, pythonic fashion.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13308491.svg)](https://doi.org/10.5281/zenodo.13308491)
 [![unit tests](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml)
 [![codecov](https://codecov.io/gh/Princeton-CDH/piffle/branch/main/graph/badge.svg)](https://codecov.io/gh/Princeton-CDH/piffle)
-[![Maintainability](https://api.codeclimate.com/v1/badges/d37850d90592f9d628df/maintainability)](https://codeclimate.com/github/Princeton-CDH/piffle/maintainability)
-
-
-Piffle is tested on Python 3.8—3.12.
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/piffle)
 
 Piffle was originally developed by Rebecca Sutton Koeser at Emory University as a part of [Readux](https://github.com/ecds/readux) and forked as a separate project under [emory-lits-labs](https://github.com/emory-lits-labs/). It was later transferred to Rebecca Sutton Koeser at the Center for Digital Humanities at Princeton.
 
@@ -105,6 +103,17 @@ Or configure your git to always ignore styling revision commits:
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
-## Publishing python packages
+### Publishing python packages
 
 A new python package is automatically built and published to [PyPI](https://pypi.python.org/pypi) using a GitHub Actions workflow when a new release is created on GitHub.
+
+## License
+
+**piffle** is distributed under the Apache 2.0 License.
+
+## Contributors
+
+- Rebecca Sutton Koeser
+- Graham Hukill
+- Rosie Wood
+- Klaus Rettinghaus
