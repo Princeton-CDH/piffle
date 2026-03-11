@@ -121,6 +121,15 @@ Or configure your git to always ignore styling revision commits:
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
+### Unit testing
+Unit tests are set up to be used with [pytest](https://docs.pytest.org/).
+
+To run the tests, run:
+
+```
+uv run pytest
+```
+
 ### Publishing python packages
 
 A new python package is automatically built and published to [PyPI](https://pypi.python.org/pypi) using a GitHub Actions workflow when a new release is created on GitHub.
