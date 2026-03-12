@@ -1,8 +1,9 @@
 name: unit tests
 
 on:
-  push: # run on every push or PR to any branch
+  push: # run on all branches
   pull_request:
+    branches: [develop, main]
   schedule: # run automatically on main branch each Tuesday at 11am
     - cron: "0 16 * * 2"
 
@@ -18,33 +19,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Install uv and Python version
+        uses: astral-sh/setup@v7
         with:
           python-version: ${{ matrix.python }}
 
-      # We base the python cache on the hash of all requirements files, so that
-      # if any change, the cache is invalidated.
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ hashFiles('setup.py') }}
-          restore-keys: |
-            pip-${{ hashFiles('setup.py') }}
-            pip-
-
       - name: Install package with dependencies
-        run: |
-          pip install -e .
-          pip install -e '.[test]'
-          pip install codecov
+        run: uv sync --extra test
 
       - name: Run pytest
-        run: py.test --cov=piffle --cov-report=xml
+        run: uv run pytest --cov=piffle --cov=tests --cov-report=xml --cov-report=term
 
       - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: false
 
   # Set the color of the slack message used in the next step based on the
       # status of the build: "danger" for failure, "good" for success,

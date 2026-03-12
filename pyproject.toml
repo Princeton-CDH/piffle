@@ -39,7 +39,7 @@ requires-python = ">=3.8"
 
 
 [tool.hatch.version]
-path = "piffle/__init__.py"
+path = "src/piffle/__init__.py"
 
 [project.urls]
 Homepage = "https://github.com/princeton-cdh/piffle"
@@ -49,10 +49,28 @@ Changelog = "https://github.com/Princeton-CDH/piffle/blob/main/README.md"
 
 [project.optional-dependencies]
 test = [
-    "pytest-cov",
     "pytest>=3.6",
+    "pytest-cov",
+    "coverage[toml]", # Enables coverage to read config from pyproject.toml
 ]
 dev = [
     "pre-commit",
     "piffle[test]"
 ]
+
+[dependency-groups]
+dev = ["piffle[dev]"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true   # Helpful for debugging
+exclude_lines = [
+    "# pragma: no cover",
+    # skip command-line configuration for main method on scripts
+    "if __name__ == .__main__.:"
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"

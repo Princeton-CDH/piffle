@@ -72,25 +72,43 @@ https://iiif.bodleian.ox.ac.uk/iiif/image/483ff8ec-347d-4070-8442-dbc15bc7b4de/f
 
 This project uses [git-flow](https://github.com/nvie/gitflow) branching conventions.
 
-Install locally for development (the use of a python virtualenv is recommended):
+For development, we assume the usage of [uv](https://docs/astral.sh/uv/).
+`uv` is compatible with the use of `pip` for python package management and a tool
+of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
 
-`pip install -e .`
+### Initial setup and installation
 
-Install test dependencies:
+- Install `uv` if it's not installed.
+  It can be installed via PyPi, Homebrew, or a standalon installer.
+  See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
+  for more details.
+  
+- To explicitly sync the project's dependencies, including optional dependencies for
+  development and testing, to your local environment run:
+ 
+  ```
+  uv sync
+  ```
 
-`pip install -e ".[dev]"`
-
-Run unit tests: `py.test` or `python setup.py test`
+- Note that `uv` performs syncing and locking automatically (e.g., any time
+  `uv run` is invoked). By default, syncing will remove any packages not
+  specifically specified in the ``pyproject.toml``.
 
 ### Install pre-commit hooks
 
 Anyone who wants to contribute to this codebase should install the configured pre-commit hooks:
 
 ```
-pre-commit install
+uv tool install pre-commit --with pre-commit-uv
 ```
 
 This will configure a pre-commit hooks to automatically lint and format python code with [ruff](https://github.com/astral-sh/ruff) and [black](https://github.com/psf/black).
+
+To run pre-commit explicitly run:
+
+```
+uv tool run pre-commit
+```
 
 Pre-commit hooks and formatting conventions were added at version 0.5, so ``git blame`` may not reflect the true author of a given change. To make ``git blame`` more accurate, ignore formatting revisions:
 
@@ -101,6 +119,15 @@ git blame <FILE> --ignore-revs-file .git-blame-ignore-revs
 Or configure your git to always ignore styling revision commits:
 ```
 git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
+### Unit testing
+Unit tests are set up to be used with [pytest](https://docs.pytest.org/).
+
+To run the tests, run:
+
+```
+uv run pytest
 ```
 
 ### Publishing python packages
