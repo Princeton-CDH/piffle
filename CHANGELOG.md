@@ -1,5 +1,10 @@
 # Change & Version Information
 
+## 0.7.1
+
+* Adopted uv support and package src layout
+* Setup additional pre-commit hooks and adopted Ruff-based formatting
+
 ## 0.7.0
 
 *experimental* new dataclass interfaces in `piffle.iiif_dataclasses` thanks to @rwood-97
@@ -8,7 +13,7 @@
     * New `collect_annotations` method to collect annotations on a presentation
   * Now supports IIIF Presentation API and Image API version 3.
   * Adds `load_iiif_image` and `load_iiif_presentation` functions for loading IIIF into dataclasses.
-  
+
 **NOTE**: new dataclasses do not yet replace the existing default API;
 interface and package structure may change in future releases.
 

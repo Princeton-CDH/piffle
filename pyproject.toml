@@ -74,3 +74,22 @@ exclude_lines = [
 
 [tool.coverage.html]
 directory = "coverage_html_report"
+
+[tool.ruff.lint]
+# Include these rules in addition to ruff's defaults
+extend-select = [
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "I",    #isort
+  "NPY",  # numpy-specific rules
+  "PERF", # perflint
+  "PTH",  # flake8-use-pathlib
+  "RUF",  # ruff-specific rules
+  "SIM",  # flake8-simplify
+  "UP",   # pyupgrade
+]
+# Can use to ignore specific rules within above selection
+ignore = []
+
+[tool.codespell]
+ignore-words-list = "pres"  # shorthand for presentation

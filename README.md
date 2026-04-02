@@ -82,10 +82,10 @@ of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
   It can be installed via PyPi, Homebrew, or a standalon installer.
   See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
   for more details.
-  
+
 - To explicitly sync the project's dependencies, including optional dependencies for
   development and testing, to your local environment run:
- 
+
   ```
   uv sync
   ```

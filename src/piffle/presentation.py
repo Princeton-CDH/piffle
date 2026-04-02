@@ -82,7 +82,7 @@ class IIIFPresentation(AtDict):
 
     @classmethod
     def from_url(cls, uri):
-        """Iniitialize :class:`IIIFPresentation` from a URL.
+        """Initialize :class:`IIIFPresentation` from a URL.
 
         :raises: :class:`IIIFException` if URL is not retrieved successfully,
             if the response is not JSON content, or if the JSON cannot be parsed.
@@ -110,7 +110,7 @@ class IIIFPresentation(AtDict):
 
     @classmethod
     def from_file_or_url(cls, path):
-        """Iniitialize :class:`IIIFPresentation` from a file or a url."""
+        """Initialize :class:`IIIFPresentation` from a file or a url."""
         if os.path.isfile(path):
             return cls.from_file(path)
         elif cls.is_url(path):
