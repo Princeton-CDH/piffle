@@ -4,6 +4,9 @@
 
 * Adopted uv support and package src layout
 * Setup additional pre-commit hooks and adopted Ruff-based formatting
+* Drop Python 3.8, 3.9 support and add Python 3.14 support
+* Add GitHub Action for ruff lint and format checks
+* Add GitHub Action to check for changelog updates
 
 ## 0.7.0
 
