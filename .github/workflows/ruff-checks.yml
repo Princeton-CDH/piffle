@@ -1,0 +1,21 @@
+name: Check Ruff linter + formatter
+on:
+  # Run on pull requests to develop or main
+  pull_request:
+    branches: [develop, main]
+  # Allow running manually
+  workflow_dispatch:
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Ruff linter
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "check --output-format=github"
+      - name: Run Ruff formatter
+        # NOTE: ruff format does not currently support github output format
+        run: ruff format --check --diff
+        # Check formatting even if the previous step failed
+        if: always()
