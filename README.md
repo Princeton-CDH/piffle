@@ -130,6 +130,17 @@ To run the tests, run:
 uv run pytest
 ```
 
+### Pull requests
+
+To propose code changes, create a pull request against the **develop** branch
+(per our git flow workflow). Pull requests should include an update to `CHANGELOG.md`
+documenting the changes to the project.
+
+Several GitHub Actions are run for pull requests: unit testing, code coverage,
+ruff checks, and a changelog check. By default, the changelog check will fail if
+the PR does not update `CHANGELOG.md`. For pull requests that do not modify code,
+the "no changelog" label can be added to skip this check.
+
 ### Publishing python packages
 
 A new python package is automatically built and published to [PyPI](https://pypi.python.org/pypi) using a GitHub Actions workflow when a new release is created on GitHub.
@@ -144,3 +155,4 @@ A new python package is automatically built and published to [PyPI](https://pypi
 - Graham Hukill
 - Rosie Wood
 - Klaus Rettinghaus
+- Laure Thompson

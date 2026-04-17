@@ -1,0 +1,20 @@
+name: Check Changelog
+on:
+  pull_request:
+    # opened/synchronize/reopened: Check changelog when PR is created or updated
+    # labeled/unlabeled: Re-run check when "no changelog" label is added/removed
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    branches: [develop, main]
+jobs:
+  check-changelog:
+    name: Verify Changelog Updated
+    runs-on: ubuntu-latest
+    # for labeled/unlabeled actions, only run if it involves the "no changelog" label
+    if: >
+      (contains(github.event.action, 'label') && github.event.label.name == 'no changelog')
+      || ! contains(github.event.action, 'label')
+    steps:
+      - name: Check changelog
+        uses: tarides/changelog-check-action@v3
+        with:
+          changelog: CHANGELOG.md

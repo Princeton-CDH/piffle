@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install uv and Python version
-        uses: astral-sh/setup@v7
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.python }}
 
