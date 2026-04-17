@@ -5,6 +5,12 @@ on:
     branches: [develop, main]
   # Allow running manually
   workflow_dispatch:
+
+concurrency:
+  # Cancel workflow if a more recent one is queued
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ruff:
     runs-on: ubuntu-latest
