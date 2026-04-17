@@ -1,6 +1,6 @@
 # Change & Version Information
 
-## 0.7.1
+## 0.8
 
 * Adopted uv support and package src layout
 * Setup additional pre-commit hooks and adopted Ruff-based formatting
@@ -8,7 +8,7 @@
 * Add GitHub Action for ruff lint and format checks
 * Add GitHub Action to check for changelog updates
 
-## 0.7.0
+## 0.7
 
 *experimental* new dataclass interfaces in `piffle.iiif_dataclasses` thanks to @rwood-97
 
@@ -24,7 +24,7 @@ interface and package structure may change in future releases.
 
 * Add explicit support for and testing against python 3.13 (thanks to @rettinghaus)
 
-## 0.6.0
+## 0.6
 
 * HTTP request method `get_iiif_url` is now a class method on
   `piffle.presentation.IIIFPresentation`, which can be extended when request
