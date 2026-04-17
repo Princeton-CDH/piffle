@@ -5,6 +5,12 @@ on:
     # labeled/unlabeled: Re-run check when "no changelog" label is added/removed
     types: [opened, synchronize, reopened, labeled, unlabeled]
     branches: [develop, main]
+
+concurrency:
+  # Cancel existing job(s) for workflow when a new one is queued
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-changelog:
     name: Verify Changelog Updated

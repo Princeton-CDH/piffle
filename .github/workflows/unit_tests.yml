@@ -7,6 +7,11 @@ on:
   schedule:  # run automatically on main branch each Tuesday at 11am
     - cron: "0 16 * * 2"
 
+concurrency:
+  # Cancel existing job(s) for workflow when a new one is queued
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   python-unit:
     name: Python unit tests
