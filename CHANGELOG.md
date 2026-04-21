@@ -54,6 +54,10 @@ interface and package structure may change in future releases.
 
 * Dropped support for Python 3.3
 
+## 0.3.1
+
+* Added long description content type for PyPi
+
 ## 0.3
 
 * Now Python 3 compatible
