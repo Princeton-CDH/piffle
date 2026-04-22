@@ -98,5 +98,10 @@ extend-select = [
 # Can use to ignore specific rules within above selection
 ignore = []
 
+[tool.mdformat]
+number = true
+wrap = "keep"
+end_of_line = "lf"
+
 [tool.codespell]
 ignore-words-list = "pres"  # shorthand for presentation
