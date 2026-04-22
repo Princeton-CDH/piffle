@@ -6,6 +6,9 @@ on:
   # Allow running manually
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued
   group: ${{ github.workflow }}-${{ github.ref }}
