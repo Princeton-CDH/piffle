@@ -64,7 +64,7 @@ dev = ["piffle[dev]"]
 minversion = "9"
 strict = true
 addopts = ["-ra"]
-testpaths = ["test"]
+testpaths = ["tests"]
 log_level = "INFO"
 filterwarnings = ["error"]
 
