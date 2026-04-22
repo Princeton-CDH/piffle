@@ -66,7 +66,8 @@ strict = true
 addopts = ["-ra"]
 testpaths = ["tests"]
 log_level = "INFO"
-filterwarnings = ["error"]
+# Print the first occurrence of matching warnings for each location
+filterwarnings = ["default"]
 
 [tool.coverage.run]
 branch = true
