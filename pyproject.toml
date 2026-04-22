@@ -60,6 +60,13 @@ dev = [
 [dependency-groups]
 dev = ["piffle[dev]"]
 
+[tool.pytest]
+minversion = "9"
+strict = true
+addopts = ["-ra"]
+log_level = "INFO"
+filterwarnings = ["error"]
+
 [tool.coverage.run]
 branch = true
 
