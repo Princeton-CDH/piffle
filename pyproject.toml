@@ -60,6 +60,15 @@ dev = [
 [dependency-groups]
 dev = ["piffle[dev]"]
 
+[tool.pytest]
+minversion = "9"
+strict = true
+addopts = ["-ra"]
+testpaths = ["tests"]
+log_level = "INFO"
+# Print the first occurrence of matching warnings for each location
+filterwarnings = ["default"]
+
 [tool.coverage.run]
 branch = true
 
@@ -89,6 +98,11 @@ extend-select = [
 ]
 # Can use to ignore specific rules within above selection
 ignore = []
+
+[tool.mdformat]
+number = true
+wrap = "keep"
+end_of_line = "lf"
 
 [tool.codespell]
 ignore-words-list = "pres"  # shorthand for presentation

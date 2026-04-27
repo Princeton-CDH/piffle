@@ -2,77 +2,83 @@
 
 ## 0.8
 
-* Adopted uv support and package src layout
-* Setup additional pre-commit hooks and adopted Ruff-based formatting
-* Drop Python 3.8, 3.9 support and add Python 3.14 support
-* Add GitHub Action for ruff lint and format checks
-* Add GitHub Action to check for changelog updates
+- Adopted uv support and package src layout
+- Setup additional pre-commit hooks and adopted Ruff-based formatting
+- Drop Python 3.8, 3.9 support and add Python 3.14 support
+- Add GitHub Action for ruff lint and format checks
+- Add GitHub Action to check for changelog updates
+- Add CodeQL GitHub Action
+- Adopt Dependabot version updates for GitHub Actions and pre-commit
 
 ## 0.7
 
 *experimental* new dataclass interfaces in `piffle.iiif_dataclasses` thanks to @rwood-97
 
-  * Add dataclasses for parsing IIIF Presentation and Image APIs.
-    * New `collect_annotations` method to collect annotations on a presentation
-  * Now supports IIIF Presentation API and Image API version 3.
-  * Adds `load_iiif_image` and `load_iiif_presentation` functions for loading IIIF into dataclasses.
+- Add dataclasses for parsing IIIF Presentation and Image APIs.
+  - New `collect_annotations` method to collect annotations on a presentation
+- Now supports IIIF Presentation API and Image API version 3.
+- Adds `load_iiif_image` and `load_iiif_presentation` functions for loading IIIF into dataclasses.
 
 **NOTE**: new dataclasses do not yet replace the existing default API;
 interface and package structure may change in future releases.
 
 ## 0.6.1
 
-* Add explicit support for and testing against python 3.13 (thanks to @rettinghaus)
+- Add explicit support for and testing against python 3.13 (thanks to @rettinghaus)
 
 ## 0.6
 
-* HTTP request method `get_iiif_url` is now a class method on
+- HTTP request method `get_iiif_url` is now a class method on
   `piffle.presentation.IIIFPresentation`, which can be extended when request
   customization is needed
-* Manifests now supports attr-dict style access to `@id` in `seeAlso` list entries
+- Manifests now supports attr-dict style access to `@id` in `seeAlso` list entries
 
 ## 0.5.1
 
-* Add explicit support and testing for python 3.12
+- Add explicit support and testing for python 3.12
 
 ## 0.5
 
-* Now supports python 3.8-3.11; dropped support for Python versions 3.6, 3.7
-* Converted setup.py to pyproject.toml
-* The alias for accessing `piffle.image` via `piffle.iiif` has been removed
-* Setup pre-commit hooks and adopted Ruff+Black style formatting
+- Now supports python 3.8-3.11; dropped support for Python versions 3.6, 3.7
+- Converted setup.py to pyproject.toml
+- The alias for accessing `piffle.image` via `piffle.iiif` has been removed
+- Setup pre-commit hooks and adopted Ruff+Black style formatting
 
 ## 0.4
 
-* Dropped support for Python versions 2.7, 3.4, 3.5
-* Now tested against python 3.7 and 3.8
-* Moved continues integration from Travis-CI to GitHub Actions
-* Renamed `piffle.iiif` to `piffle.image`, but for backwards compatibility `piffle.iiif` will still work
-* Now includes `piffle.presentation` for simple read access to IIIF Presentation content
+- Dropped support for Python versions 2.7, 3.4, 3.5
+- Now tested against python 3.7 and 3.8
+- Moved continues integration from Travis-CI to GitHub Actions
+- Renamed `piffle.iiif` to `piffle.image`, but for backwards compatibility `piffle.iiif` will still work
+- Now includes `piffle.presentation` for simple read access to IIIF Presentation content
 
 ## 0.3.2
 
-* Dropped support for Python 3.3
+- Dropped support for Python 3.3
+
+## 0.3.1
+
+- Added long description content type for PyPi
 
 ## 0.3
 
-* Now Python 3 compatible
-* URI canonicalization for size, region, rotation, and URL as a whole
+- Now Python 3 compatible
+- URI canonicalization for size, region, rotation, and URL as a whole
 
 ## 0.2.1
 
-* Bug fix: chaining multiple different options combines all of them properly and does not modify
-   the original image object.
+- Bug fix: chaining multiple different options combines all of them properly and does not modify
+  the original image object.
 
 ## 0.2
 
-* New methods to parse urls and provide image option information. Contributed by [Graham Hukill (@ghukill)](https://github.com/ghukill) [PR #1](https://github.com/emory-lits-labs/piffle/pull/1)
-* New method to parse a IIIF Image url and initialize IIIFImageClient via url
-* New methods to make IIIF Image options available as dictionary
-* Options are now stored internally in logical, dictionary form rather than as IIIF option strings
+- New methods to parse urls and provide image option information. Contributed by [Graham Hukill (@ghukill)](https://github.com/ghukill) [PR #1](https://github.com/emory-lits-labs/piffle/pull/1)
+- New method to parse a IIIF Image url and initialize IIIFImageClient via url
+- New methods to make IIIF Image options available as dictionary
+- Options are now stored internally in logical, dictionary form rather than as IIIF option strings
 
 ## 0.1
 
 Initial alpha release, extracting basic IIIF Image API client from [readux codebase](https://github.com/emory-libraries/readux)
 
-* Image client can handle custom id and generates urls for json info, and custom sizes and formats.
+- Image client can handle custom id and generates urls for json info, and custom sizes and formats.

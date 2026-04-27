@@ -12,6 +12,14 @@ repos:
         args: [--fix, --show-fixes]  # enable lint fixes
       # Run the formatter
       - id: ruff-format
+  # mdformat for formatting Markdown files
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        # Optionally add plugins
+        additional_dependencies:
+          - mdformat-pyproject  # support configuration in pyproject.toml
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
     rev: v0.17.2
