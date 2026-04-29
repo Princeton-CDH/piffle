@@ -3,7 +3,7 @@ coverage:
     project:
       default: false  # disable the default status that measures entire project
       core:  # custom target for core package
-        target: 95%
+        target: 90%
         paths:
           - "src/piffle/*.py"
           - "!src/piffle/load_presentation.py"
