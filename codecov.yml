@@ -5,17 +5,14 @@ coverage:
       core:  # custom target for core package
         target: 95%
         paths:
-          - "src/piffle/*.py"
-        ignore:
-          - "src/piffle/load_presentation.py"
-          - "src/piffle/utils.py"
+          - "src/piffle/"
       tests:  # 100% coverage for test files
         target: 100%
         paths:
           - "tests/"  # only include coverage in tests folder
-      experimental:
-        target: 45%
-        paths:
-          - "src/piffle/iiif_dataclasses"
-          - "src/piffle/load_presentation.py"
-          - "src/piffle/utils.py"
+#      experimental:
+#        target: 45%
+#        paths:
+#          - "src/piffle/iiif_dataclasses"
+#          - "src/piffle/load_presentation.py"
+#          - "src/piffle/utils.py"
