@@ -120,7 +120,7 @@ class TestIIIFImageClient:
         assert f"{api_endpoint}/{image_id}/full/full/90/default.jpg" == str(
             img.rotation(degrees=90)
         )
-        with pytest.raises(image.IIIFImageClientException):
+        with pytest.raises(image.IIIFImageClientException, match="Unknown option: foo"):
             img.rotation(foo="bar")
 
     def test_format(self):
@@ -132,7 +132,9 @@ class TestIIIFImageClient:
         assert str(jpg).endswith(".jpg")
         assert str(gif).endswith(".gif")
 
-        with pytest.raises(image.IIIFImageClientException):
+        with pytest.raises(
+            image.IIIFImageClientException, match="Image format bogus unknown"
+        ):
             img.format("bogus")
 
     def test_combine_options(self):
@@ -197,17 +199,19 @@ class TestIIIFImageClient:
         assert img.size.options["exact"] is True
 
         # malformed
-        with pytest.raises(image.ParseError):
+        with pytest.raises(
+            image.ParseError, match="Invalid IIIF image information url"
+        ):
             img = image.IIIFImageClient.init_from_url(INVALID_URLS["info"])
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid IIIF image request"):
             image.IIIFImageClient.init_from_url(INVALID_URLS["simple"])
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid region coordinates"):
             image.IIIFImageClient.init_from_url(INVALID_URLS["complex"])
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Error parsing size"):
             image.IIIFImageClient.init_from_url(INVALID_URLS["bad_size"])
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid region coordinates"):
             image.IIIFImageClient.init_from_url(INVALID_URLS["bad_region"])
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid IIIF image url"):
             image.IIIFImageClient.init_from_url("http://info.json")
 
     def test_as_dicts(self):
@@ -312,20 +316,29 @@ class TestImageRegion:
         assert region.as_dict()["percent"] is True
 
         # errors
-        with pytest.raises(image.IIIFImageClientException):
-            # invalid parameter
+
+        ## invalid parameter
+        with pytest.raises(
+            image.IIIFImageClientException, match="Unknown option: bogus"
+        ):
             image.ImageRegion(bogus="foo")
 
-            # incomplete options
+        ## incomplete options
+        err_msg = "Incomplete region specified"
+        with pytest.raises(image.IIIFImageClientException, match=err_msg):
             image.ImageRegion(x=1)
+        with pytest.raises(image.IIIFImageClientException, match=err_msg):
             image.ImageRegion(x=1, y=2)
-            image.ImageRegion(x=1, y=2, w=20)
+        with pytest.raises(image.IIIFImageClientException, match=err_msg):
+            image.ImageRegion(x=1, y=2, width=20)
+        with pytest.raises(image.IIIFImageClientException, match=err_msg):
             image.ImageRegion(percent=True)
+        with pytest.raises(image.IIIFImageClientException, match=err_msg):
             image.ImageRegion().set_options(percent=True, x=1)
 
-            # TODO: type checking? (not yet implemented)
+        ## TODO: type checking? (not yet implemented)
 
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid region coordinates: 1,2"):
             image.ImageRegion().parse("1,2")
 
     def test_render(self):
@@ -381,9 +394,11 @@ class TestImageRegion:
         assert region_opts["percent"] is True
 
         # invalid or incomplete region strings
-        with pytest.raises(image.ParseError):
+        with pytest.raises(image.ParseError, match="Invalid region coordinates: 1,3,"):
             region.parse("pct:1,3,")
-        with pytest.raises(image.ParseError):
+        with pytest.raises(
+            image.ParseError, match="Invalid region coordinates: one,two,three,four"
+        ):
             region.parse("one,two,three,four")
 
     def test_canonicalize(self):
@@ -391,7 +406,9 @@ class TestImageRegion:
         # should raise an error
         region = image.ImageRegion()
         region.parse("square")
-        with pytest.raises(image.IIIFImageClientException):
+        with pytest.raises(
+            image.IIIFImageClientException, match="Cannot canonicalize without image"
+        ):
             region.canonicalize()
 
         img = image.IIIFImageClient.init_from_url(VALID_URLS["simple"])
