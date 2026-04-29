@@ -2,6 +2,7 @@
 
 ## 0.8
 
+- Restored `piffle.presentation` unit tests from v0.6.1; separated tests for `piffle.iiif_dataclasses` presentation implementation
 - Adopted uv support and package src layout
 - Setup additional pre-commit hooks and adopted Ruff-based formatting
 - Drop Python 3.8, 3.9 support and add Python 3.14 support
