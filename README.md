@@ -12,11 +12,13 @@ Piffle was originally developed by Rebecca Sutton Koeser at Emory University as 
 
 ## Installation and example use:
 
-`pip install piffle`
+```sh
+pip install piffle
+```
 
 Example use for generating an IIIF image url:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> myimg = IIIFImageClient('http://image.server/path/', 'myimgid')
 >>> print myimg
@@ -29,7 +31,7 @@ http://image.server/path/myimgid/full/120,/0/default.png
 
 Example use for parsing an IIIF image url:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> myimg = IIIFImageClient.init_from_url('http://www.example.org/image-service/abcd1234/full/full/0/default.jpg')
 >>> print myimg
@@ -46,7 +48,7 @@ False
 
 Example use for reading a IIIF manifest:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> from piffle.presentation import IIIFPresentation
 >>>  manifest = IIIFPresentation.from_url('https://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json')
@@ -86,19 +88,34 @@ of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
 - To explicitly sync the project's dependencies, including optional dependencies for
   development and testing, to your local environment run:
 
-  ```
+  ```sh
   uv sync
   ```
 
 - Note that `uv` performs syncing and locking automatically (e.g., any time
   `uv run` is invoked). By default, syncing will remove any packages not
-  specifically specified in the ``pyproject.toml``.
+  specifically specified in the `pyproject.toml`.
+
+### Setup git hooks
+
+This project uses custom git hooks which are defined in `.githooks`.
+To ensure these githooks are run, git needs to be reconfigured to use this directory:
+
+```sh
+git config core.hooksPath .githooks
+```
+
+If you have any pre-existing git hooks, make sure to copy them to the .githooks directory
+
+```sh
+cp .git/hooks/* .githooks
+```
 
 ### Install pre-commit hooks
 
 Anyone who wants to contribute to this codebase should install the configured pre-commit hooks:
 
-```
+```sh
 uv tool install pre-commit --with pre-commit-uv
 ```
 
@@ -106,27 +123,29 @@ This will configure a pre-commit hooks to automatically lint and format python c
 
 To run pre-commit explicitly run:
 
-```
+```sh
 uv tool run pre-commit
 ```
 
-Pre-commit hooks and formatting conventions were added at version 0.5, so ``git blame`` may not reflect the true author of a given change. To make ``git blame`` more accurate, ignore formatting revisions:
+Pre-commit hooks and formatting conventions were added at version 0.5, so `git blame` may not reflect the true author of a given change. To make `git blame` more accurate, ignore formatting revisions:
 
-```
+```sh
 git blame <FILE> --ignore-revs-file .git-blame-ignore-revs
 ```
 
 Or configure your git to always ignore styling revision commits:
-```
+
+```sh
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 ### Unit testing
+
 Unit tests are set up to be used with [pytest](https://docs.pytest.org/).
 
 To run the tests, run:
 
-```
+```sh
 uv run pytest
 ```
 

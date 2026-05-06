@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Git hooks
+.githooks/pre-commit
+.githooks/*.sample

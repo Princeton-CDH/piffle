@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Verify main and develop are up-to-date before creating a release branch
+
+# Check that main branch is up-to-date
+if [ $(git rev-parse main) != $(git rev-parse origin/main) ]; then
+  echo "ERROR: Local main branch not in sync with remote branch"
+  exit 1
+fi
+
+# Check that develop branch is up-to-date
+if [ $(git rev-parse develop) != $(git rev-parse origin/develop) ]; then
+  echo "ERROR: Local develop branch not in sync with remote branch"
+  exit 1
+fi
