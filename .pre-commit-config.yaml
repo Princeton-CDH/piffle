@@ -22,7 +22,7 @@ repos:
           - mdformat-pyproject  # support configuration in pyproject.toml
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.21.0
     hooks:
       - id: yamlfmt
   # Codespell for spell checking
