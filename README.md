@@ -74,10 +74,10 @@ https://iiif.bodleian.ox.ac.uk/iiif/image/483ff8ec-347d-4070-8442-dbc15bc7b4de/f
 
 This project uses git flow branching conventions via [git-flow-next](https://github.com/gittower/git-flow-next).
 
-[!NOTE]
-Make sure you are using the correct version of git flow.
-The original [git-flow](https://github.com/nvie/gitflow) and its successor [git-flow-avh](https://github.com/petervanderdoes/gitflow-avh) are no longer maintained.
-While `git-flow-next` is backwards compatible, this project assumes the workflow and features of `git-flow-next`.
+> [!NOTE]
+> Make sure you are using the correct version of git flow.
+> The original [git-flow](https://github.com/nvie/gitflow) and its successor [git-flow-avh](https://github.com/petervanderdoes/gitflow-avh) are no longer maintained.
+> While `git-flow-next` is backwards compatible, this project assumes the workflow and features of `git-flow-next`.
 
 For development, we assume the usage of [uv](https://docs/astral.sh/uv/).
 `uv` is compatible with the use of `pip` for python package management and a tool
