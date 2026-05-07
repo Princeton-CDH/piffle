@@ -72,7 +72,7 @@ https://iiif.bodleian.ox.ac.uk/iiif/image/483ff8ec-347d-4070-8442-dbc15bc7b4de/f
 
 ## Development and Testing
 
-This project uses [git-flow](https://github.com/nvie/gitflow) branching conventions.
+This project uses git flow branching conventions via [git-flow-next](https://github.com/gittower/git-flow-next)..
 
 For development, we assume the usage of [uv](https://docs/astral.sh/uv/).
 `uv` is compatible with the use of `pip` for python package management and a tool
@@ -105,7 +105,7 @@ To ensure these githooks are run, git needs to be reconfigured to use this direc
 git config core.hooksPath .githooks
 ```
 
-If you have any pre-existing git hooks, make sure to copy them to the .githooks directory
+If you have any pre-existing git hooks, make sure to copy them over to `.githooks`:
 
 ```sh
 cp .git/hooks/* .githooks
