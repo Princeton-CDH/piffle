@@ -25,19 +25,17 @@ jobs:
           echo "base_ref: ${{ github.base_ref  }}"
 
       - name: Check PRs to main
-        if: >
-          github.head_ref == 'main' &&
-          ! startsWith(github.base_ref, 'release/') &&
-          ! startsWith(github.base.ref, 'hotfix/')
+        if: github.base_ref == 'main'
         run: |
-          echo "ERROR: PRs targeting main must come from a release or hotfix branch"
-          exit 0
+          if [[ ${{ github.head_ref }} != "release/*" && ${{ github.head_ref }} != "hotfix/*" ]]; then
+            echo "ERROR: PRs targeting main must come from a release or hotfix branch"
+            exit 0
+          fi
 
       - name: Check PRs to develop
-        if: >
-          github.head_ref == 'develop' &&
-          ! startsWith(github.base_ref, 'main') &&
-          ! startsWith(github.base_ref, 'feature/')
+        if: github.base_ref == 'develop'
         run: |
-          echo "ERROR: PRs targeting develop must come from main or a feature branch"
-          exit 0
+          if [[ ${{ github.head_ref }} != "main" && ${{ github.head_ref }} != "feature/*" ]]; then
+            echo "ERROR: PRs targeting develop must come from main or a feature branch"
+            exit 0
+          fi
