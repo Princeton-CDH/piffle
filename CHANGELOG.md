@@ -8,8 +8,11 @@
 - Drop Python 3.8, 3.9 support and add Python 3.14 support
 - Add GitHub Action for ruff lint and format checks
 - Add GitHub Action to check for changelog updates
+- Add GitHub Action to check that pull requests align with git flow workflow
 - Add CodeQL GitHub Action
 - Adopt Dependabot version updates for GitHub Actions and pre-commit
+- Adopt git-flow-next for git flow branching conventions
+- Add custom git hooks for git flow workflow
 
 ## 0.7
 
