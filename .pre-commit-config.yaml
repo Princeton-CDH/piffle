@@ -20,6 +20,7 @@ repos:
         # Optionally add plugins
         additional_dependencies:
           - mdformat-pyproject  # support configuration in pyproject.toml
+          - mdformat-frontmatter  # support GitHub front-matter
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
     rev: v0.21.0
