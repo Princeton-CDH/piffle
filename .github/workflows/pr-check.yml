@@ -19,6 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug
+        run: |
+          echo "head_ref: ${{ github.head_ref  }}"
+          echo "base_ref: ${{ github.base_ref  }}"
+
       - name: Check PRs to main
         if: >
           github.head_ref == 'main' &&
