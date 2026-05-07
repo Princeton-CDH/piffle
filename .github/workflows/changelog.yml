@@ -7,7 +7,7 @@ on:
     branches: [develop, main]
 
 permissions:
-  contents: read
+  actions: write  # for concurrency logic
 
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued

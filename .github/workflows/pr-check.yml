@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  actions: write  # so it can cancel existing jobs
+  actions: write  # for concurrency logic
 
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued

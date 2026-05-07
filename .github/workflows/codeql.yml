@@ -19,6 +19,12 @@ on:
   schedule:
     - cron: '33 22 * * 5'
 
+permissions:
+  actions: write  # for concurrency logic
+  contents: read
+  security-events: write
+  pull-requests: read
+
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued
   group: ${{ github.workflow }}-${{ github.ref }}

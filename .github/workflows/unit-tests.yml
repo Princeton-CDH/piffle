@@ -7,6 +7,10 @@ on:
   schedule:  # run automatically on main branch each Tuesday at 11am
     - cron: "0 16 * * 2"
 
+permissions:
+  actions: write  # for concurrency logic
+  contents: read
+
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued
   group: ${{ github.workflow }}-${{ github.ref }}
