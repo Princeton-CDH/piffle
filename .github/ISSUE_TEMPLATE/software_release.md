@@ -13,7 +13,6 @@ assignees: ''
 - [ ] Update release version to appropriate number (set to final version without any `-pre` or `-dev` tags).
 - [ ] Create a PR for the release
 - [ ] Review the changelog to make sure that all features, changes, bugfixes, etc. included in the release are documented. You may want to review the git revision history to be sure you've captured everything.
-- [ ] Check python requirements for any internal dependencies that should be released
 - [ ] Confirm that all checks for the PR pass (e.g., unit tests, code coverage checks)
 - [ ] Review code documentation to make sure it is up to date
 - [ ] Request a review for the PR
