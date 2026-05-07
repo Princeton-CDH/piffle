@@ -6,8 +6,7 @@ on:
       - develop
       - main
 
-permissions:
-  actions: write  # for concurrency logic
+permissions: {}
 
 concurrency:
   # Cancel existing job(s) for workflow when a new one is queued

@@ -8,7 +8,6 @@ on:
     - cron: "0 16 * * 2"
 
 permissions:
-  actions: write  # for concurrency logic
   contents: read
 
 concurrency:

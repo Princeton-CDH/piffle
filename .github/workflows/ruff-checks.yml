@@ -7,7 +7,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: write  # for concurrency logic
   contents: read
 
 concurrency:

@@ -20,7 +20,6 @@ on:
     - cron: '33 22 * * 5'
 
 permissions:
-  actions: write  # for concurrency logic
   contents: read
   security-events: write
   pull-requests: read
