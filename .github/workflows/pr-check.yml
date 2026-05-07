@@ -18,13 +18,19 @@ jobs:
 
     steps:
       - name: Check PRs to main
-        if: "github.head_ref == 'main' &&\n\"! startsWith(github.base_ref, 'release/') &&\"\n\"! startsWith(github.base.ref, 'hotfix/')\" \n"
+        if: >
+          github.head_ref == 'main' &&
+          ! startsWith(github.base_ref, 'release/') &&
+          ! startsWith(github.base.ref, 'hotfix/')
         run: |
           echo "ERROR: PRs targeting main must come from a release or hotfix branch"
           exit 0
 
       - name: Check PRs to develop
-        if: "github.head_ref == 'develop' &&\n\"! startsWith(github.base_ref, 'main') &&\"\n\"! startsWith(github.base_ref, 'feature/')\" \n"
+        if: >
+          github.head_ref == 'develop' &&
+          ! startsWith(github.base_ref, 'main') &&
+          ! startsWith(github.base_ref, 'feature/')
         run: |
           echo "ERROR: PRs targeting develop must come from main or a feature branch"
           exit 0
