@@ -85,43 +85,65 @@ of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
 
 ### Initial setup and installation
 
-- Install `uv` if it's not installed.
-  It can be installed via PyPi, Homebrew, or a standalon installer.
-  See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
-  for more details.
+#### Initizalize and configure git-flow in your local repository
 
-- To explicitly sync the project's dependencies, including optional dependencies for
-  development and testing, to your local environment run:
+Install `git-flow-next` if it's not installed.
+It can be installed via Homebrew or manual installation.
+See `git-flow-next`'s [installation documentation](https://git-flow.sh/docs/installation/) for more details.
 
-  ```sh
-  uv sync
-  ```
-
-- Note that `uv` performs syncing and locking automatically (e.g., any time
-  `uv run` is invoked). By default, syncing will remove any packages not
-  specifically specified in the `pyproject.toml`.
-
-### Setup git hooks
-
-This project uses custom git hooks which are defined in `.githooks`.
-To ensure these githooks are run, git needs to be reconfigured to use this directory:
+To initialize git-flow run:
 
 ```sh
-git config core.hooksPath .githooks
+git flow init --preset=classic --defaults
 ```
 
-If you have any pre-existing git hooks, make sure to copy them over to `.githooks`:
+This package uses custom configurations options for git-flow including the use of custom git-flow hooks which are defined in `gitflow-hooks`.
+Run the provided `setup_gitflow.sh` script to update git-flow's configuration.
 
 ```sh
-cp .git/hooks/* .githooks
+sh setup_gitflow.sh
 ```
 
-### Install pre-commit hooks
+These configuration options are set in the local git config (`.git/config`).
 
-Anyone who wants to contribute to this codebase should install the configured pre-commit hooks:
+To display an overview of the current git-flow configuration, branch structure, and workflow status run:
+
+```sh
+git flow overview
+```
+
+#### Install uv
+
+Install `uv` if it's not installed.
+It can be installed via PyPi, Homebrew, or a standalone installer.
+See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
+for more details.
+
+To explicitly sync the project's dependencies, including optional dependencies for
+development and testing, to your local environment run:
+
+```sh
+uv sync
+```
+
+Note that `uv` performs syncing and locking automatically (e.g., any time
+`uv run` is invoked). By default, syncing will remove any packages not
+specifically specified in the `pyproject.toml`.
+
+#### Install pre-commit hooks
+
+Anyone who wants to contribute to this codebase should install the configured pre-commit hooks.
+
+To install pre-commit run:
 
 ```sh
 uv tool install pre-commit --with pre-commit-uv
+```
+
+To install the configure pre-commit hooks run:
+
+```sh
+pre-commit install
 ```
 
 This will configure a pre-commit hooks to automatically lint and format python code with [ruff](https://github.com/astral-sh/ruff) and [black](https://github.com/psf/black).
@@ -129,7 +151,7 @@ This will configure a pre-commit hooks to automatically lint and format python c
 To run pre-commit explicitly run:
 
 ```sh
-uv tool run pre-commit
+pre-commit run --all-files
 ```
 
 Pre-commit hooks and formatting conventions were added at version 0.5, so `git blame` may not reflect the true author of a given change. To make `git blame` more accurate, ignore formatting revisions:
