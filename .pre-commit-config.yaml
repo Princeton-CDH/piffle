@@ -5,7 +5,7 @@
 repos:
   # Ruff Python linter and formatter (configs in pyproject.toml)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.7
+    rev: v0.15.12
     hooks:
       # Run the linter
       - id: ruff-check
@@ -20,21 +20,22 @@ repos:
         # Optionally add plugins
         additional_dependencies:
           - mdformat-pyproject  # support configuration in pyproject.toml
+          - mdformat-frontmatter  # support GitHub front-matter
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.21.0
     hooks:
       - id: yamlfmt
   # Codespell for spell checking
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: v2.4.2
     hooks:
       - id: codespell
         additional_dependencies:
           - tomli
   # Some out-of-the-box file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       # Check for files with merge conflict strings
       - id: check-merge-conflict
@@ -52,16 +53,16 @@ repos:
   # Check uv.lock file is up to date
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.8.6
+    rev: 0.11.11
     hooks:
       - id: uv-lock
   # Validate Github Actions schema
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.33.2
+    rev: 0.37.2
     hooks:
       - id: check-github-workflows
   # Validate Github Actions workflow files
   - repo: https://github.com/mpalmer/action-validator
-    rev: v0.8.0
+    rev: v0.9.0
     hooks:
       - id: action-validator

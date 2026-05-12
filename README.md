@@ -12,11 +12,13 @@ Piffle was originally developed by Rebecca Sutton Koeser at Emory University as 
 
 ## Installation and example use:
 
-`pip install piffle`
+```sh
+pip install piffle
+```
 
 Example use for generating an IIIF image url:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> myimg = IIIFImageClient('http://image.server/path/', 'myimgid')
 >>> print myimg
@@ -29,7 +31,7 @@ http://image.server/path/myimgid/full/120,/0/default.png
 
 Example use for parsing an IIIF image url:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> myimg = IIIFImageClient.init_from_url('http://www.example.org/image-service/abcd1234/full/full/0/default.jpg')
 >>> print myimg
@@ -46,7 +48,7 @@ False
 
 Example use for reading a IIIF manifest:
 
-```
+```sh
 >>> from piffle.image import IIIFImageClient
 >>> from piffle.presentation import IIIFPresentation
 >>>  manifest = IIIFPresentation.from_url('https://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json')
@@ -70,7 +72,12 @@ https://iiif.bodleian.ox.ac.uk/iiif/image/483ff8ec-347d-4070-8442-dbc15bc7b4de/f
 
 ## Development and Testing
 
-This project uses [git-flow](https://github.com/nvie/gitflow) branching conventions.
+This project uses git flow branching conventions via [git-flow-next](https://github.com/gittower/git-flow-next).
+
+> [!NOTE]
+> Make sure you are using the correct version of git flow.
+> The original [git-flow](https://github.com/nvie/gitflow) and its successor [git-flow-avh](https://github.com/petervanderdoes/gitflow-avh) are no longer maintained.
+> While `git-flow-next` is backwards compatible, this project assumes the workflow and features of `git-flow-next`.
 
 For development, we assume the usage of [uv](https://docs/astral.sh/uv/).
 `uv` is compatible with the use of `pip` for python package management and a tool
@@ -78,55 +85,94 @@ of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
 
 ### Initial setup and installation
 
-- Install `uv` if it's not installed.
-  It can be installed via PyPi, Homebrew, or a standalon installer.
-  See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
-  for more details.
+#### Initizalize and configure git-flow in your local repository
 
-- To explicitly sync the project's dependencies, including optional dependencies for
-  development and testing, to your local environment run:
+Install `git-flow-next` if it's not installed.
+It can be installed via Homebrew or manual installation.
+See `git-flow-next`'s [installation documentation](https://git-flow.sh/docs/installation/) for more details.
 
-  ```
-  uv sync
-  ```
+To initialize git-flow run:
 
-- Note that `uv` performs syncing and locking automatically (e.g., any time
-  `uv run` is invoked). By default, syncing will remove any packages not
-  specifically specified in the ``pyproject.toml``.
-
-### Install pre-commit hooks
-
-Anyone who wants to contribute to this codebase should install the configured pre-commit hooks:
-
+```sh
+git flow init --preset=classic --defaults
 ```
+
+This package uses custom configurations options for git-flow including the use of custom git-flow hooks which are defined in `gitflow-hooks`.
+Run the provided `setup_gitflow.sh` script to update git-flow's configuration.
+
+```sh
+sh setup_gitflow.sh
+```
+
+These configuration options are set in the local git config (`.git/config`).
+
+To display an overview of the current git-flow configuration, branch structure, and workflow status run:
+
+```sh
+git flow overview
+```
+
+#### Install uv
+
+Install `uv` if it's not installed.
+It can be installed via PyPi, Homebrew, or a standalone installer.
+See `uv`'s [installation documentation](https://docs.astral.sh/uv/getting-started/installation)
+for more details.
+
+To explicitly sync the project's dependencies, including optional dependencies for
+development and testing, to your local environment run:
+
+```sh
+uv sync
+```
+
+Note that `uv` performs syncing and locking automatically (e.g., any time
+`uv run` is invoked). By default, syncing will remove any packages not
+specifically specified in the `pyproject.toml`.
+
+#### Install pre-commit hooks
+
+Anyone who wants to contribute to this codebase should install the configured pre-commit hooks.
+
+To install pre-commit run:
+
+```sh
 uv tool install pre-commit --with pre-commit-uv
+```
+
+To install the configure pre-commit hooks run:
+
+```sh
+pre-commit install
 ```
 
 This will configure a pre-commit hooks to automatically lint and format python code with [ruff](https://github.com/astral-sh/ruff) and [black](https://github.com/psf/black).
 
 To run pre-commit explicitly run:
 
-```
-uv tool run pre-commit
+```sh
+pre-commit run --all-files
 ```
 
-Pre-commit hooks and formatting conventions were added at version 0.5, so ``git blame`` may not reflect the true author of a given change. To make ``git blame`` more accurate, ignore formatting revisions:
+Pre-commit hooks and formatting conventions were added at version 0.5, so `git blame` may not reflect the true author of a given change. To make `git blame` more accurate, ignore formatting revisions:
 
-```
+```sh
 git blame <FILE> --ignore-revs-file .git-blame-ignore-revs
 ```
 
 Or configure your git to always ignore styling revision commits:
-```
+
+```sh
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
 ### Unit testing
+
 Unit tests are set up to be used with [pytest](https://docs.pytest.org/).
 
 To run the tests, run:
 
-```
+```sh
 uv run pytest
 ```
 
