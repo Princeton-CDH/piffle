@@ -12,7 +12,8 @@
 - Add CodeQL GitHub Action
 - Adopt Dependabot version updates for GitHub Actions and pre-commit
 - Adopt git-flow-next for git flow branching conventions
-- Add custom git hooks for git flow workflow
+- Add custom hooks for git flow workflow in `gitflow-hooks`
+- Add custom script for configuring git-flow `setup_gitflow.sh`
 
 ## 0.7
 
