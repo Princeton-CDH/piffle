@@ -23,7 +23,7 @@ assignees: ''
 ## after release
 
 - With `post-release-update` feature branch (automatically created for you by git flow)
-  - [ ] Increase the develop branch version so it is set to the next expected release (i.e., if you just released 0.5 then develop will probably be 0.6-dev unless you are working on a major update, in which case it will be 1.0-dev)
+  - [ ] Increase the develop branch version so it is set to the next expected release (i.e., if you just released 0.5 then develop will probably be 0.6.dev0 unless you are working on a major update, in which case it will be 1.0.dev0)
   - [ ] Update the changelog to include a section for the next expected release version
   - [ ] Create a PR and request a review once all checks are passing
 - [ ] Push main branch updates to GitHub (`git push main`).
