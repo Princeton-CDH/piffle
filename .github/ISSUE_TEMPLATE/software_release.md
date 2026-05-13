@@ -10,7 +10,7 @@ assignees: ''
 
 - [ ] Pull updated copies of the develop and main branches
 - [ ] Use git-flow to create a new release branch with the appropriate version (e.g., `git flow release start 0.5`)
-- [ ] Update release version to appropriate number (set to final version without any `-pre` or `-dev` tags).
+- [ ] Update release version to appropriate number (set to final version without any pre-release or dev tags).
 - [ ] Create a PR for the release (from release branch to `main`)
 - [ ] Review the changelog to make sure that all features, changes, bugfixes, etc. included in the release are documented. You may want to review the git revision history to be sure you've captured everything.
 - [ ] Confirm that all checks for the PR pass (e.g., unit tests, code coverage checks)
