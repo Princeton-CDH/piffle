@@ -17,7 +17,8 @@ assignees: ''
 - [ ] Review code documentation to make sure it is up to date
 - [ ] Request a review for the PR
 - [ ] Once approved, use git-flow to finish the release (`git flow release finish`).
-  *Make sure to use the `--squash-message` flag to customize the commit message for the squash merge.*\*
+  *Make sure to use the `--squash-message` flag to customize the commit message for the squash merge and
+  the `--message` flag to specify the tag message.*
 
 ## after release
 
