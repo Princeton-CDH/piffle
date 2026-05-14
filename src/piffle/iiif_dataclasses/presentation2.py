@@ -205,7 +205,6 @@ class Range2(IIIFPresentation2):
         canvases: list[Canvas2 | Any] = [],
         **kwargs,
     ):
-
         if context is None:
             log.warning("Range is missing 'context' field.")
         if id is None:

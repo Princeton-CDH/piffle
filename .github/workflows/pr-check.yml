@@ -1,0 +1,36 @@
+name: Check GitHub Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+permissions: {}
+
+concurrency:
+  # Cancel existing job(s) for workflow when a new one is queued
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-gitflow:
+    name: Validate GitFlow branch rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check PRs to main
+        if: github.base_ref == 'main'
+        run: |
+          if [[ ${{ github.head_ref }} =~ "release/*" && ${{ github.head_ref }} =~ "hotfix/*" ]]; then
+            echo "ERROR: PRs targeting main must come from a release or hotfix branch"
+            exit 1
+          fi
+
+      - name: Check PRs to develop
+        if: github.base_ref == 'develop'
+        run: |
+          if [[ ${{ github.head_ref }} =~ "main" && ${{ github.head_ref }} =~ "feature/*" ]]; then
+            echo "ERROR: PRs targeting develop must come from main or a feature branch"
+            exit 1
+          fi

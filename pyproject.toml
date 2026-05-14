@@ -18,12 +18,11 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 keywords =[
@@ -39,7 +38,7 @@ requires-python = ">=3.8"
 
 
 [tool.hatch.version]
-path = "piffle/__init__.py"
+path = "src/piffle/__init__.py"
 
 [project.urls]
 Homepage = "https://github.com/princeton-cdh/piffle"
@@ -49,10 +48,61 @@ Changelog = "https://github.com/Princeton-CDH/piffle/blob/main/README.md"
 
 [project.optional-dependencies]
 test = [
-    "pytest-cov",
     "pytest>=3.6",
+    "pytest-cov",
+    "coverage[toml]", # Enables coverage to read config from pyproject.toml
 ]
 dev = [
     "pre-commit",
     "piffle[test]"
 ]
+
+[dependency-groups]
+dev = ["piffle[dev]"]
+
+[tool.pytest]
+minversion = "9"
+strict = true
+addopts = ["-ra"]
+testpaths = ["tests"]
+log_level = "INFO"
+# Print the first occurrence of matching warnings for each location
+filterwarnings = ["default"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true   # Helpful for debugging
+exclude_lines = [
+    "# pragma: no cover",
+    # skip command-line configuration for main method on scripts
+    "if __name__ == .__main__.:"
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
+
+[tool.ruff.lint]
+# Include these rules in addition to ruff's defaults
+extend-select = [
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "I",    #isort
+  "NPY",  # numpy-specific rules
+  "PERF", # perflint
+  "PTH",  # flake8-use-pathlib
+  "RUF",  # ruff-specific rules
+  "SIM",  # flake8-simplify
+  "UP",   # pyupgrade
+]
+# Can use to ignore specific rules within above selection
+ignore = []
+
+[tool.mdformat]
+number = true
+wrap = "keep"
+end_of_line = "lf"
+
+[tool.codespell]
+ignore-words-list = "pres"  # shorthand for presentation
