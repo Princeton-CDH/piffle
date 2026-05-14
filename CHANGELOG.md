@@ -1,5 +1,7 @@
 # Change & Version Information
 
+## 0.9.0
+
 ## 0.8.0
 
 - Restored `piffle.presentation` unit tests from v0.6.1; separated tests for `piffle.iiif_dataclasses` presentation implementation
