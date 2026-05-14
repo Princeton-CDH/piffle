@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Some automation for updating the develop branch post-release
+
+set -e
+
+# Create a new feature branch
+git flow feature start post-release-update
+
+# Prompt next steps
+echo "\n"
+echo "***********************"
+echo "* Post-Release Update *"
+echo "***********************"
+echo "After the release, update develop using the post-release-update feature branch as follows:"
+echo "  - Update the package version (should end in .dev0)"
+echo "  - Add a section for this version at the top of the CHANGELOG"
+echo "  - Create a PR so these updates can be pushed to develop"

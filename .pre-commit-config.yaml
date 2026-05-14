@@ -1,19 +1,68 @@
+# This config file specifies which pre-commit hooks to run.
+#
+# To set up, run `pre-commit install`
+# To run all hooks manually, run `pre-commit run --all-files`
 repos:
+  # Ruff Python linter and formatter (configs in pyproject.toml)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.12.5
+    rev: v0.15.12
     hooks:
-      - id: ruff
-        args: [ --fix]
-
-  - repo: https://github.com/psf/black
-    rev: 25.1.0 # Replace by any tag/version: https://github.com/psf/black/tags
+      # Run the linter
+      - id: ruff-check
+        args: [--fix, --show-fixes]  # enable lint fixes
+      # Run the formatter
+      - id: ruff-format
+  # mdformat for formatting Markdown files
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
     hooks:
-      - id: black
-        # Assumes that your shell's `python` command is linked to python3.6+
-        language_version: python
-
+      - id: mdformat
+        # Optionally add plugins
+        additional_dependencies:
+          - mdformat-pyproject  # support configuration in pyproject.toml
+          - mdformat-frontmatter  # support GitHub front-matter
+  # yamlfmt for formatting YAML files
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.21.0
+    hooks:
+      - id: yamlfmt
+  # Codespell for spell checking
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell
+        additional_dependencies:
+          - tomli
+  # Some out-of-the-box file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Check for files with merge conflict strings
+      - id: check-merge-conflict
+      # Verify syntax of TOML files
+      - id: check-toml
+      # Verify syntax of YAML files
+      - id: check-yaml
+        args: [--unsafe]
+      # Verifies that test files begin with test_
+      - id: name-tests-test
+        args: [--pytest-test-first]
+      # Removes trailing whitespace from all files
+      - id: trailing-whitespace
+        exclude: "docs/"
+  # Check uv.lock file is up to date
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.11.11
+    hooks:
+      - id: uv-lock
+  # Validate Github Actions schema
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.33.2
+    rev: 0.37.2
     hooks:
       - id: check-github-workflows
+  # Validate Github Actions workflow files
+  - repo: https://github.com/mpalmer/action-validator
+    rev: v0.9.0
+    hooks:
+      - id: action-validator
