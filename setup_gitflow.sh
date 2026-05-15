@@ -13,10 +13,6 @@ git config gitflow.feature.start.fetch true
 git config gitflow.hotfix.start.fetch true
 git config gitflow.bugfix.start.fetch true
 
-# Use squash merge for hotfixes and releases
-git config gitflow.branch.hotfix.upstreamStrategy squash
-git config gitflow.branch.release.upstreamStrategy squash
-
 # Use custom message for develop auto-updates
 git config gitflow.hotfix.finish.updatemessage "chore: sync %b from %p"
 git config gitflow.release.finish.updatemessage "chore: sync %b from %p"
