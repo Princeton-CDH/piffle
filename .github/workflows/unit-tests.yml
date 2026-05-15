@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install uv and Python version
         uses: astral-sh/setup-uv@v7
@@ -40,7 +40,7 @@ jobs:
 
       # Only upload test coverage for Python 3.12
       - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         if: matrix.python == '3.12'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
