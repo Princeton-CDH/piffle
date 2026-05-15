@@ -5,7 +5,7 @@
 repos:
   # Ruff Python linter and formatter (configs in pyproject.toml)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: v0.15.13
     hooks:
       # Run the linter
       - id: ruff-check
@@ -53,7 +53,7 @@ repos:
   # Check uv.lock file is up to date
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
-    rev: 0.11.11
+    rev: 0.11.14
     hooks:
       - id: uv-lock
   # Validate Github Actions schema
