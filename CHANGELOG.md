@@ -1,5 +1,10 @@
 # Change & Version Information
 
+## 0.9.0
+
+- Revise git-flow configuration so releases and hotfixes merge to main instead of squash merge
+- Update software release GitHub issue template
+
 ## 0.8.0
 
 - Restored `piffle.presentation` unit tests from v0.6.1; separated tests for `piffle.iiif_dataclasses` presentation implementation
