@@ -78,7 +78,7 @@ class ImageRegion:
             return img
 
     def set_options(self, **options):
-        """Update region options.  Same parameters as initialiation."""
+        """Update region options.  Same parameters as initialization."""
         allowed_options = list(self.options.keys())
         # error if an unrecoganized option is specified
         for key in options:
@@ -178,7 +178,7 @@ class ImageRegion:
         ):
             return
 
-        # possbly an error here for every other case if self.img is not set,
+        # possibly an error here for every other case if self.img is not set,
         # since it's probably not possible to canonicalize without knowing
         # image size  (any exceptions?)
         if self.img is None:
@@ -298,7 +298,7 @@ class ImageSize:
             return img
 
     def set_options(self, **options):
-        """Update size options.  Same parameters as initialiation."""
+        """Update size options.  Same parameters as initialization."""
         allowed_options = list(self.options.keys())
         # error if an unrecoganized option is specified
         for key in options:
@@ -386,7 +386,7 @@ class ImageSize:
             # nothing to do
             return
 
-        # possbly an error here for every other case if self.img is not set,
+        # possibly an error here for every other case if self.img is not set,
         # since it's probably not possible to canonicalize without knowing
         # image size  (any exceptions?)
         if self.img is None:
@@ -475,7 +475,7 @@ class ImageRotation:
             return img
 
     def set_options(self, **options):
-        """Update size options.  Same parameters as initialiation."""
+        """Update size options.  Same parameters as initialization."""
         allowed_options = self.options.keys()
         # error if an unrecoganized option is specified
         for key in options:
@@ -588,7 +588,7 @@ class IIIFImageClient:
             self.image_options["fmt"] = fmt
 
     def get_image_id(self):
-        "Image id to be used in contructing urls"
+        "Image id to be used in constructing urls"
         return self.image_id
 
     def __str__(self):

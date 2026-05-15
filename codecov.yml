@@ -1,0 +1,20 @@
+coverage:
+  status:
+    project:
+      default: false  # disable the default status that measures entire project
+      core:  # custom target for core package
+        target: 90%
+        paths:
+          - "src/piffle/*.py"
+          - "!src/piffle/load_presentation.py"
+          - "!src/piffle/utils.py"
+      tests:  # 100% coverage for test files
+        target: 100%
+        paths:
+          - "tests/"  # only include coverage in tests folder
+      experimental:
+        informational: true
+        paths:
+          - "src/piffle/iiif_dataclasses/"
+          - "src/piffle/load_presentation.py"
+          - "src/piffle/utils.py"
