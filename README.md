@@ -4,7 +4,7 @@ Python library for generating and parsing [IIIF Image API](http://iiif.io/api/im
 object-oriented, pythonic fashion.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13308491.svg)](https://doi.org/10.5281/zenodo.13308491)
-[![unit tests](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/Princeton-CDH/piffle/actions/workflows/unit_tests.yml)
+[![unit tests](https://github.com/Princeton-CDH/piffle/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/Princeton-CDH/piffle/actions/workflows/unit-tests.yml)
 [![codecov](https://codecov.io/gh/Princeton-CDH/piffle/branch/main/graph/badge.svg)](https://codecov.io/gh/Princeton-CDH/piffle)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/piffle)
 
