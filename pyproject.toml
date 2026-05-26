@@ -32,6 +32,7 @@ dependencies = [
     "addict",
     "cached-property",
     "requests",
+    "uv>=0.4.0",
 ]
 license = {text = "Apache License, Version 2.0"}
 requires-python = ">=3.8"
@@ -106,3 +107,6 @@ end_of_line = "lf"
 
 [tool.codespell]
 ignore-words-list = "pres"  # shorthand for presentation
+
+[tool.uv]
+exclude-newer = "7 days"

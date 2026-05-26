@@ -25,10 +25,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Install uv and Python version
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b  # v8.1.0
         with:
           python-version: ${{ matrix.python }}
 
@@ -40,7 +42,7 @@ jobs:
 
       # Only upload test coverage for Python 3.12
       - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354  # v6.0.1
         if: matrix.python == '3.12'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -60,7 +62,7 @@ jobs:
       # at the organization level and available to all repositories. Only run on
       # scheduled builds & pushes, since PRs automatically report to Slack.
       - name: Report status to Slack
-        uses: rtCamp/action-slack-notify@v2
+        uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661  # v2.3.3
         if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
         continue-on-error: true
         env:

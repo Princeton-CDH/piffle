@@ -16,6 +16,8 @@ updates:
       actions:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
 
   # Enable version updates for pre-commit hooks
   - package-ecosystem: "pre-commit"
@@ -27,3 +29,5 @@ updates:
         # Group all pre-commit hook version updates together
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
