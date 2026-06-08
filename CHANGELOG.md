@@ -4,9 +4,10 @@
 
 - Revise git-flow configuration so releases and hotfixes merge to main instead of squash merge
 - Update software release GitHub issue template
-- For increased security, reference GitHub repos with full sha commit hash for GitHub Actions and pre-commit
+- Fixed GitHub Action workflow for publishing package to PyPi
+- For increased security, pin GitHub repositories to full commit hash for GitHub Actions and pre-commit
 - Reduce Dependabot version update checks to monthly
-- Add pre-commit hook for identifying common security issues in GitHub Actions workflows
+- Add pre-commit hook for linting GitHub Actions workflows
 
 ## 0.8.0
 

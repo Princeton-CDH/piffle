@@ -66,3 +66,9 @@ repos:
     rev: 76a805bbfcba3506d6cdb4bba1810ab504e0d72b  # frozen: v0.9.0
     hooks:
       - id: action-validator
+  # Security-focused GitHub Actions linter
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: 9257c6050c0261b8c57e712f632dc4a8010109a9  # frozen: v1.25.2
+    hooks:
+      - id: zizmor
+        args: [--fix=safe]  # enable safe fixes

@@ -17,12 +17,13 @@ jobs:
   validate-gitflow:
     name: Validate GitFlow branch rules
     runs-on: ubuntu-latest
-
+    env:
+      HEAD_REF: ${{ github.head_ref }}
     steps:
       - name: Check PRs to main
         if: github.base_ref == 'main'
         run: |
-          if [[ ${{ github.head_ref }} =~ "release/*" && ${{ github.head_ref }} =~ "hotfix/*" ]]; then
+          if [[ ${HEAD_REF} =~ "release/*" && ${HEAD_REF } =~ "hotfix/*" ]]; then
             echo "ERROR: PRs targeting main must come from a release or hotfix branch"
             exit 1
           fi
@@ -30,7 +31,7 @@ jobs:
       - name: Check PRs to develop
         if: github.base_ref == 'develop'
         run: |
-          if [[ ${{ github.head_ref }} =~ "main" && ${{ github.head_ref }} =~ "feature/*" ]]; then
+          if [[ ${HEAD_REF} =~ "main" && ${HEAD_REF} =~ "feature/*" ]]; then
             echo "ERROR: PRs targeting develop must come from main or a feature branch"
             exit 1
           fi
