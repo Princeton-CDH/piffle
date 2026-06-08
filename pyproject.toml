@@ -60,6 +60,9 @@ dev = [
 [dependency-groups]
 dev = ["piffle[dev]"]
 
+[tool.uv]
+exclude-newer = "1 week"
+
 [tool.pytest]
 minversion = "9"
 strict = true
