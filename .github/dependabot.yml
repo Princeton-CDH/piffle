@@ -9,8 +9,11 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every week
-      interval: "weekly"
+      # Check for updates to GitHub Actions every month
+      interval: "monthly"
+    cooldown:
+      # Only install version updates that are at least a week old
+      default-days: 7
     groups:
       # Group all GitHub Actions version updates together
       actions:
@@ -21,7 +24,11 @@ updates:
   - package-ecosystem: "pre-commit"
     directory: "/"
     schedule:
-      interval: "weekly"
+      # Check for updates to GitHub Actions every month
+      interval: "monthly"
+    cooldown:
+      # Only install version updates that are at least a week old
+      default-days: 7
     groups:
       precommit-hooks:
         # Group all pre-commit hook version updates together
