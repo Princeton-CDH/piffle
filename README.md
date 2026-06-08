@@ -85,7 +85,7 @@ of your choice for creating python virtual environments (e.g., `mamba`, `venv`).
 
 ### Initial setup and installation
 
-#### Initizalize and configure git-flow in your local repository
+#### Initialize and configure git-flow in your local repository
 
 Install `git-flow-next` if it's not installed.
 It can be installed via Homebrew or manual installation.
