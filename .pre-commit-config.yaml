@@ -5,7 +5,7 @@
 repos:
   # Ruff Python linter and formatter (configs in pyproject.toml)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.12
+    rev: 0671d8ab202c4ac093b78433ae5baf74f3fc7246  # frozen: v0.15.15
     hooks:
       # Run the linter
       - id: ruff-check
@@ -14,7 +14,7 @@ repos:
       - id: ruff-format
   # mdformat for formatting Markdown files
   - repo: https://github.com/hukkin/mdformat
-    rev: 1.0.0
+    rev: 2d496dbc18e31b83a1596685347ffe0b6041daf0  # frozen: 1.0.0
     hooks:
       - id: mdformat
         # Optionally add plugins
@@ -23,19 +23,19 @@ repos:
           - mdformat-frontmatter  # support GitHub front-matter
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
-    rev: v0.21.0
+    rev: b5ca1890231d5e1e5181fef75a1be609d1e25029  # frozen: v0.21.0
     hooks:
       - id: yamlfmt
   # Codespell for spell checking
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: 2ccb47ff45ad361a21071a7eedda4c37e6ae8c5a  # frozen: v2.4.2
     hooks:
       - id: codespell
         additional_dependencies:
           - tomli
   # Some out-of-the-box file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       # Check for files with merge conflict strings
       - id: check-merge-conflict
@@ -52,17 +52,17 @@ repos:
         exclude: "docs/"
   # Check uv.lock file is up to date
   - repo: https://github.com/astral-sh/uv-pre-commit
-    # uv version.
-    rev: 0.11.11
+    # uv version
+    rev: 3e7518446022606defbcdadcf8170a40cc680a8c  # frozen: 0.11.18
     hooks:
       - id: uv-lock
   # Validate Github Actions schema
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.2
+    rev: 943377262562a12b57292fc98fabd7dbf81451fe  # frozen: 0.37.2
     hooks:
       - id: check-github-workflows
   # Validate Github Actions workflow files
   - repo: https://github.com/mpalmer/action-validator
-    rev: v0.9.0
+    rev: 76a805bbfcba3506d6cdb4bba1810ab504e0d72b  # frozen: v0.9.0
     hooks:
       - id: action-validator
