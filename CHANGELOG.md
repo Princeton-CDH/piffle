@@ -2,12 +2,30 @@
 
 ## 0.9.0
 
+### Development
+
 - Revise git-flow configuration so releases and hotfixes merge to main instead of squash merge
 - Update software release GitHub issue template
-- Fixed GitHub Action workflow for publishing package to PyPi
-- For increased security, pin GitHub repositories to full commit hash for GitHub Actions and pre-commit
-- Reduce Dependabot version update checks to monthly
-- Add pre-commit hook for linting GitHub Actions workflows
+- Pin python version for development to 3.12 with `.python-version` file
+- Add 7-day cooldown for uv
+
+#### Security
+
+- Add pre-commit hook for zizmor a security-focused static analysis tool for GitHub Actions
+- Pin GitHub repository references to full commit hashes for pre-commit and GitHub Actions
+- Update permissionsfor GitHub Actions
+
+#### Dependabot
+
+- Add Dependabot version updates for uv
+- Reduce Dependabot version updates to monthly and add 7-day cooldowns
+- Configure Dependabot so all version updates will be grouped into one PR that targets the develop branch
+
+#### GitHub Actions
+
+- Update GitHub Action for publishing package to PyPi to use uv
+- Update unit test GitHub Action with proper uv package configuration
+- Fix GitHub Action for checking that pull requests align with git-flow workflow
 
 ## 0.8.0
 
