@@ -45,6 +45,6 @@ jobs:
             echo "PASS: PRs from Dependabot updates can target develop"
             exit 0
           else
-            echo "ERROR: PRs targeting develop must come from main, Dependabot version updates, or a feature branch"
+            echo "ERROR: PRs targeting develop must come from main, Dependabot updates, or a feature branch"
             exit 1
           fi
