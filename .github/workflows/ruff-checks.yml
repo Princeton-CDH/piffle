@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   ruff:
+    name: Run Ruff checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
