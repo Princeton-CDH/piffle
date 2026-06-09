@@ -20,18 +20,15 @@ jobs:
     env:
       HEAD_REF: ${{ github.head_ref }}
     steps:
-      - name: Debug (delete later)
-        run: echo "$HEAD_REF"
-
       - name: Check PRs to main
         if: github.base_ref == 'main'
         run: |
-          if [[ "$HEAD_REF" =~ "^(release|hotfix)/" ]]; then
+          if [[ "$HEAD_REF" =~ ^(release|hotfix)/ ]]; then
             echo "PASS: PRs from release and hotfix branches can target main"
             exit 0
-          elif [[ ${HEAD_REF} =~ "^dependabot/" ]]; then
-            echo "ERROR: Cannot directly merge Dependabot security updates"
-            echo "Add desired updates to a release or hotfix branch"
+          elif [[ ${HEAD_REF} =~ ^dependabot/ ]]; then
+            echo "ERROR: Cannot directly merge Dependabot updates"
+            echo "Add desired updates to a release, hotfix, or feature branch"
             exit 1
           else
             echo "ERROR: PRs targeting main must come from a release or hotfix branch"
@@ -41,10 +38,10 @@ jobs:
       - name: Check PRs to develop
         if: github.base_ref == 'develop'
         run: |
-          if [[ "$HEAD_REF" == "main" || "$HEAD_REF" =~ "^feature/" ]]; then
+          if [[ "$HEAD_REF" = "main" || "$HEAD_REF" =~ ^feature/ ]]; then
             echo "PASS: PRs from main and feature branches can target develop"
             exit 0
-          elif [[ "$HEAD_REF" =~ "^dependabot/version-updates/" ]]; then
+          elif [[ "$HEAD_REF" =~ ^dependabot/version-updates/ ]]; then
             echo "PASS: PRs from Dependabot version updates can target develop"
             exit 0
           else
