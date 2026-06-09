@@ -41,8 +41,8 @@ jobs:
           if [[ "$HEAD_REF" = "main" || "$HEAD_REF" =~ ^feature/ ]]; then
             echo "PASS: PRs from main and feature branches can target develop"
             exit 0
-          elif [[ "$HEAD_REF" =~ ^dependabot/version-updates/ ]]; then
-            echo "PASS: PRs from Dependabot version updates can target develop"
+          elif [[ "$HEAD_REF" =~ ^dependabot/ ]]; then
+            echo "PASS: PRs from Dependabot updates can target develop"
             exit 0
           else
             echo "ERROR: PRs targeting develop must come from main, Dependabot version updates, or a feature branch"
