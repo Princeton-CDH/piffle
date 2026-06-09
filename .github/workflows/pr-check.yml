@@ -20,6 +20,9 @@ jobs:
     env:
       HEAD_REF: ${{ github.head_ref }}
     steps:
+      - name: Debug (delete later)
+        run: echo "$HEAD_REF"
+
       - name: Check PRs to main
         if: github.base_ref == 'main'
         run: |
