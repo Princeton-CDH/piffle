@@ -2,6 +2,10 @@
 
 ## 0.10.0
 
+### Development
+
+- Update python-publish GitHub Action so it can be triggered manually for main
+
 ## 0.9.0
 
 ### Development
