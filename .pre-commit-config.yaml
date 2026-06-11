@@ -5,7 +5,7 @@
 repos:
   # Ruff Python linter and formatter (configs in pyproject.toml)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 0671d8ab202c4ac093b78433ae5baf74f3fc7246  # frozen: v0.15.15
+    rev: 22f0422809455ec89ffdcf5a00170ba816e42ddb  # frozen: v0.15.16
     hooks:
       # Run the linter
       - id: ruff-check
@@ -14,7 +14,7 @@ repos:
       - id: ruff-format
   # mdformat for formatting Markdown files
   - repo: https://github.com/hukkin/mdformat
-    rev: 2d496dbc18e31b83a1596685347ffe0b6041daf0  # frozen: 1.0.0
+    rev: 82912cdaea4fb830f751504486a7879c70526547  # frozen: 1.0.0
     hooks:
       - id: mdformat
         # Optionally add plugins
@@ -23,7 +23,7 @@ repos:
           - mdformat-frontmatter  # support GitHub front-matter
   # yamlfmt for formatting YAML files
   - repo: https://github.com/google/yamlfmt
-    rev: b5ca1890231d5e1e5181fef75a1be609d1e25029  # frozen: v0.21.0
+    rev: 21ca5323a9c87ee37a434e0ca908efc0a89daa07  # frozen: v0.21.0
     hooks:
       - id: yamlfmt
   # Codespell for spell checking
@@ -53,17 +53,17 @@ repos:
   # Check uv.lock file is up to date
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version
-    rev: 3e7518446022606defbcdadcf8170a40cc680a8c  # frozen: 0.11.18
+    rev: c665864e22f27255a10d82e14f8ccea6843fd65e  # frozen: 0.11.19
     hooks:
       - id: uv-lock
   # Validate Github Actions schema
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 943377262562a12b57292fc98fabd7dbf81451fe  # frozen: 0.37.2
+    rev: f805888065fdb6162e1f800e50bb9460cbd223d6  # frozen: 0.37.2
     hooks:
       - id: check-github-workflows
   # Validate Github Actions workflow files
   - repo: https://github.com/mpalmer/action-validator
-    rev: 76a805bbfcba3506d6cdb4bba1810ab504e0d72b  # frozen: v0.9.0
+    rev: c994f427b7c42cd5ecb1bc9315cb91c3d7d72e3d  # frozen: v0.9.0
     hooks:
       - id: action-validator
   # Security-focused GitHub Actions static analysis tool
