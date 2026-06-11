@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CHANGELOG: CHANGELOG.MD
+  CHANGELOG: CHANGELOG.md
   BASE_REF: ${{ github.base_ref }}
   # Has no changelog label
   HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'no changelog') }}
@@ -46,5 +46,5 @@ jobs:
             echo "For changes not user-visible, add the 'no changelog' label to override this behavior."
             exit 1
           else
-            echo "Check passes, changes detected in ${CHANGELOG}."
+            echo "Check passes, changes detected in ${CHANGELOG}"
           fi
