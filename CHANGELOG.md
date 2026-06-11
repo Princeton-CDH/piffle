@@ -1,5 +1,7 @@
 # Change & Version Information
 
+## 0.10.0
+
 ## 0.9.0
 
 ### Development
