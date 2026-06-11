@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  BASE_REF: ${{ github.base_ref }}
   # Prevent uv from including develop dependencies by default
   UV_NO_DEV: 1
   # Prevent uv run from syncing by default
@@ -55,18 +56,81 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: false
 
-      # Set the color of the slack message used in the next step based on the
-      # status of the build: "danger" for failure, "good" for success,
-      # "warning" for error
-      - name: Set Slack message color based on build status
-        if: ${{ always() }}
+      # Record per-version status so the aggregator job can build a multi-line
+      # Slack message with one line per Python version. Uses always() so a
+      # status is recorded even when pytest fails.
+      - name: Record build status for Slack summary
+        if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
         env:
           JOB_STATUS: ${{ job.status }}
-        run: echo "SLACK_COLOR=$(if [ "$JOB_STATUS" == "success" ]; then echo "good"; elif [ "$JOB_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
+          PYTHON_VERSION: ${{ matrix.python }}
+        run: |
+          mkdir -p build-status
+          case "$JOB_STATUS" in
+            success)   ICON=":white_check_mark:" ;;
+            failure)   ICON=":x:" ;;
+            cancelled) ICON=":no_entry_sign:" ;;
+            *)         ICON=":warning:" ;;
+          esac
+          # Sanitize the python version for use in a filename (e.g. 3.12 -> 3-12)
+          SAFE_VERSION="${PYTHON_VERSION//./-}"
+          printf '• python %s: %s %s' "$PYTHON_VERSION" "$ICON" "$JOB_STATUS" \
+            > "build-status/${SAFE_VERSION}.txt"
+
+      - name: Upload build status artifact
+        if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: build-status-${{ matrix.python }}
+          path: build-status/
+          retention-days: 1
+
+  # Aggregate matrix results and send a single Slack notification for the
+  # entire workflow run, rather than one per matrix job. The message body
+  # contains one line per Python version, similar to GitHub's own check
+  # summaries.
+  notify-slack:
+    name: Report status to Slack
+    needs: python-unit
+    runs-on: ubuntu-latest
+    # Only run on scheduled builds & pushes, since PRs automatically report to
+    # Slack. Use always() so this runs even when the test matrix fails.
+    if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
+    steps:
+      - name: Download per-version build statuses
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          path: build-status
+          pattern: build-status-*
+          merge-multiple: true
+
+      # Set the color of the slack message used in the next step based on the
+      # aggregate status of the matrix build: "danger" for failure, "good" for
+      # success, "warning" for anything else (cancelled, skipped, etc.)
+      - name: Set Slack message color based on build status
+        env:
+          BUILD_STATUS: ${{ needs.python-unit.result }}
+        run: echo "SLACK_COLOR=$(if [ "$BUILD_STATUS" == "success" ]; then echo "good"; elif [ "$BUILD_STATUS" == "failure" ]; then echo "danger"; else echo "warning"; fi)" >> $GITHUB_ENV
+
+      # Build the per-version summary block by concatenating all the artifact
+      # files (sorted by version) into a single multi-line string. Escape
+      # newlines so ENABLE_ESCAPES in the Slack action expands them.
+      - name: Build Slack message body
+        run: |
+          {
+            printf 'SLACK_MESSAGE<<EOF\n'
+            printf 'Run <https://github.com/%s/actions/runs/%s|#%s> on <https://github.com/%s/|%s@%s>\n' \
+              "${{ github.repository }}" "${{ github.run_id }}" "${{ github.run_number }}" \
+              "${{ github.repository }}" "${{ github.repository }}" "${BASE_REF}"
+            for f in $(ls build-status/*.txt 2>/dev/null | sort -V); do
+              cat "$f"
+              printf '\n'
+            done
+            printf 'EOF\n'
+          } >> "$GITHUB_ENV"
 
       # Send a message to slack to report the build status. The webhook is stored
-      # at the organization level and available to all repositories. Only run on
-      # scheduled builds & pushes, since PRs automatically report to Slack.
+      # at the organization level and available to all repositories.
       - name: Report status to Slack
         uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661  # v.2.4.0
         if: ${{ always() && (github.event_name == 'schedule' || github.event_name == 'push') }}
@@ -74,7 +138,7 @@ jobs:
         env:
           SLACK_COLOR: ${{ env.SLACK_COLOR }}
           SLACK_WEBHOOK: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
-          SLACK_TITLE: "Workflow `${{ github.workflow }}` (python ${{ matrix.python }}): ${{ job.status }}"
-          SLACK_MESSAGE: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on <https://github.com/${{ github.repository }}/|${{ github.repository }}@${{ github.ref }}>"
+          SLACK_TITLE: "Workflow `${{ github.workflow }}`: ${{ needs.python-unit.result }}"
+          SLACK_MESSAGE: ${{ env.SLACK_MESSAGE }}
           SLACK_FOOTER: "<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|View commit>"
           MSG_MINIMAL: true  # use compact slack message format
