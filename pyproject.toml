@@ -34,7 +34,7 @@ dependencies = [
     "requests",
 ]
 license = {text = "Apache License, Version 2.0"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 
 [tool.hatch.version]
@@ -59,6 +59,9 @@ dev = [
 
 [dependency-groups]
 dev = ["piffle[dev]"]
+
+[tool.uv]
+exclude-newer = "1 week"
 
 [tool.pytest]
 minversion = "9"

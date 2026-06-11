@@ -1,3 +1,5 @@
+# Inspired by the changelog-check-action (https://github.com/tarides/changelog-check-action)
+
 name: Check Changelog
 on:
   pull_request:
@@ -13,16 +15,36 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  CHANGELOG: CHANGELOG.md
+  BASE_REF: ${{ github.base_ref }}
+  # Has no changelog label
+  HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'no changelog') }}
+
 jobs:
   check-changelog:
     name: Verify Changelog Updated
     runs-on: ubuntu-latest
-    # for labeled/unlabeled actions, only run if it involves the "no changelog" label
+    # For labeled/unlabeled actions, only run if it involves the "no changelog" label
     if: >
       (contains(github.event.action, 'label') && github.event.label.name == 'no changelog')
       || ! contains(github.event.action, 'label')
     steps:
-      - name: Check changelog
-        uses: tarides/changelog-check-action@v3
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
-          changelog: CHANGELOG.md
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check changelog
+        run: |
+          if ${HAS_LABEL}; then
+            echo "Check passes, since 'no changelog' label is set"
+            exit 0
+          elif git diff --exit-code "origin/${BASE_REF}" -- "${CHANGELOG}"; then
+            echo "Error: User-visible changes should come with an entry in the changelog."
+            echo "For changes not user-visible, add the 'no changelog' label to override this behavior."
+            exit 1
+          else
+            echo "Check passes, changes detected in ${CHANGELOG}"
+          fi

@@ -1,35 +1,35 @@
 ---
 name: piffle release checklist
 about: Checklist for releasing new versions of piffle
-title: piffle release checklist
+title: Release v
 labels: chore
 assignees: ''
 ---
 
 ## release prep
 
-- [ ] Pull updated copies of the develop and main branches
-- [ ] Use git-flow to create a new release branch with the appropriate version (e.g., `git flow release start 0.5`)
+- [ ] Pull updated copies of the develop and main branches.
+- [ ] Use git-flow to create a new release branch with the appropriate version (e.g., `git flow release start 0.5.0`).
 - [ ] Update release version to appropriate number (set to final version without any pre-release or dev tags).
-- [ ] Create a PR for the release (from release branch to `main`)
+- [ ] Create a PR for the release (from release branch to `main`).
 - [ ] Review the changelog to make sure that all features, changes, bugfixes, etc. included in the release are documented. You may want to review the git revision history to be sure you've captured everything.
-- [ ] Confirm that all checks for the PR pass (e.g., unit tests, code coverage checks)
-- [ ] Review code documentation to make sure it is up to date
+- [ ] Confirm that all checks for the PR pass (e.g., unit tests, code coverage checks).
+- [ ] Review code documentation to make sure it is up to date.
 - [ ] Review the commit logs to make sure all logs are meaningful and sufficient. To revise and squash commit messages, use `git rebase -i`.
-- [ ] Request a review for the PR
+- [ ] Request a review for the PR.
 - [ ] Once approved, use git-flow to finish the release (`git flow release finish`).
-  *Make sure to use the `-M, --merge-message` flag to customize the commit message for the merge and
+  *Make sure to use the `-M`, `--merge-message` flag to customize the commit message for the merge and
   the `--message` flag to specify the tag message.*
 
 ## after release
 
-- With `post-release-update` feature branch (automatically created for you by git-flow)
-  - [ ] Increase the develop branch version so it is set to the next expected release (i.e., if you just released 0.5 then develop will probably be 0.6.dev0 unless you are working on a major update, in which case it will be 1.0.dev0)
-  - [ ] Update the changelog to include a section for the next expected release version
-  - [ ] Create a PR and request a review once all checks are passing
+- With `post-release-update` feature branch (automatically created for you by git-flow hook):
+  - [ ] Increase the develop branch version so it is set to the next expected release (i.e., if you just released 0.5.0 then develop will probably be 0.6.0.dev0 unless you are working on a major update, in which case it will be 1.0.0.dev0).
+  - [ ] Update the changelog to include a section for the next expected release version.
+  - [ ] Create a PR and request a review once all checks are passing.
 - [ ] Push main branch updates to GitHub (`git push main`).
   *This will fail if the release's PR has not been approved or has failing checks.*
-- [ ] Push tag to GitHub (e.g., `git push origin tag 0.5`)
-- [ ] Create release on GitHub
+- [ ] Push tag to GitHub (e.g., `git push origin tag 0.5.0`).
+- [ ] Create release on GitHub.
 - [ ] Merge `post-release-update` to develop.
   *This will fail if the feature's PR has not been approved or has failing checks.*

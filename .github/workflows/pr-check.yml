@@ -17,12 +17,20 @@ jobs:
   validate-gitflow:
     name: Validate GitFlow branch rules
     runs-on: ubuntu-latest
-
+    env:
+      HEAD_REF: ${{ github.head_ref }}
     steps:
       - name: Check PRs to main
         if: github.base_ref == 'main'
         run: |
-          if [[ ${{ github.head_ref }} =~ "release/*" && ${{ github.head_ref }} =~ "hotfix/*" ]]; then
+          if [[ "$HEAD_REF" =~ ^(release|hotfix)/ ]]; then
+            echo "PASS: PRs from release and hotfix branches can target main"
+            exit 0
+          elif [[ ${HEAD_REF} =~ ^dependabot/ ]]; then
+            echo "ERROR: Cannot directly merge Dependabot updates"
+            echo "Add desired updates to a release, hotfix, or feature branch"
+            exit 1
+          else
             echo "ERROR: PRs targeting main must come from a release or hotfix branch"
             exit 1
           fi
@@ -30,7 +38,13 @@ jobs:
       - name: Check PRs to develop
         if: github.base_ref == 'develop'
         run: |
-          if [[ ${{ github.head_ref }} =~ "main" && ${{ github.head_ref }} =~ "feature/*" ]]; then
-            echo "ERROR: PRs targeting develop must come from main or a feature branch"
+          if [[ "$HEAD_REF" = "main" || "$HEAD_REF" =~ ^feature/ ]]; then
+            echo "PASS: PRs from main and feature branches can target develop"
+            exit 0
+          elif [[ "$HEAD_REF" =~ ^dependabot/ ]]; then
+            echo "PASS: PRs from Dependabot updates can target develop"
+            exit 0
+          else
+            echo "ERROR: PRs targeting develop must come from main, Dependabot updates, or a feature branch"
             exit 1
           fi

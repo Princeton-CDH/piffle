@@ -4,26 +4,38 @@
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
+
+multi-ecosystem-groups:
+  # Consolidate version updates into a single PR
+  version-updates:
+    schedule:
+      interval: "monthly"
+    target-branch: "develop"
+
 updates:
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
-    schedule:
-      # Check for updates to GitHub Actions every week
-      interval: "weekly"
-    groups:
-      # Group all GitHub Actions version updates together
-      actions:
-        patterns:
-          - "*"
+    cooldown:
+      # Only install version updates that are at least a week old
+      default-days: 7
+    patterns: ["*"]
+    multi-ecosystem-group: "version-updates"
 
   # Enable version updates for pre-commit hooks
   - package-ecosystem: "pre-commit"
     directory: "/"
-    schedule:
-      interval: "weekly"
-    groups:
-      precommit-hooks:
-        # Group all pre-commit hook version updates together
-        patterns:
-          - "*"
+    cooldown:
+      # Only install version updates that are at least a week old
+      default-days: 7
+    patterns: ["*"]
+    multi-ecosystem-group: "version-updates"
+
+  # Enable version updates for uv
+  - package-ecosystem: "uv"
+    directory: "/"
+    cooldown:
+      # Only install version updates that are at least a week old
+      default-days: 7
+    patterns: ["*"]
+    multi-ecosystem-group: "version-updates"
