@@ -13,7 +13,7 @@
 
 - Add pre-commit hook for zizmor a security-focused static analysis tool for GitHub Actions
 - Pin GitHub repository references to full commit hashes for pre-commit and GitHub Actions
-- Update permissionsfor GitHub Actions
+- Update permissions for GitHub Actions
 
 #### Dependabot
 
