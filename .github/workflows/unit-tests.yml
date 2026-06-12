@@ -16,7 +16,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE_REF: ${{ github.base_ref }}
   # Prevent uv from including develop dependencies by default
   UV_NO_DEV: 1
   # Prevent uv run from syncing by default
@@ -56,9 +55,8 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: false
 
-      # Record per-version status so the aggregator job can build a multi-line
-      # Slack message with one line per Python version. Uses always() so a
-      # status is recorded even when pytest fails.
+      # Record per-version status for the aggregator. Uses always() so status
+      # is captured even when pytest fails.
       - name: Record build status for Slack summary
         if: ${{ always() }}
         env:
@@ -85,10 +83,8 @@ jobs:
           path: build-status/
           retention-days: 1
 
-  # Aggregate matrix results and send a single Slack notification for the
-  # entire workflow run, rather than one per matrix job. The message body
-  # contains one line per Python version, similar to GitHub's own check
-  # summaries.
+  # Aggregate results into a single Slack message with one line per Python
+  # version, rather than one per matrix job.
   notify-slack:
     name: Report status to Slack
     needs: python-unit
@@ -104,10 +100,8 @@ jobs:
           pattern: build-status-*
           merge-multiple: true
 
-      # Assemble the per-version summary by concatenating the artifact files
-      # (sorted by version) into a multi-line string for the Slack payload.
-      # Also pick an attachment color based on the aggregate matrix result:
-      # green for success, red for failure, yellow for anything else.
+      # Concatenate artifact files (sorted by version) into a multi-line string
+      # and pick attachment color based on aggregate result.
       - name: Build Slack message body
         env:
           BUILD_STATUS: ${{ needs.python-unit.result }}
@@ -127,10 +121,8 @@ jobs:
             printf 'EOF\n'
           } >> "$GITHUB_ENV"
 
-      # Send a single message to Slack with a Block Kit layout: a header with
-      # the overall status, a context line linking to the run, and a section
-      # listing per-version results. The webhook is stored at the organization
-      # level and available to all repositories.
+      # Send a single Slack message with a Block Kit layout: header (overall
+      # status), context (run + commit link), and section (per-version lines).
       - name: Report status to Slack
         uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c  # v3.0.3
         continue-on-error: true
