@@ -77,7 +77,7 @@ jobs:
           esac
           # Sanitize the python version for use in a filename (e.g. 3.12 -> 3-12)
           SAFE_VERSION="${PYTHON_VERSION//./-}"
-          printf '• python %s: %s %s' "$PYTHON_VERSION" "$ICON" "$JOB_STATUS" \
+          printf '• %s python %s: %s'  "$ICON" "$PYTHON_VERSION" "$JOB_STATUS" \
             > "build-status/${SAFE_VERSION}.txt"
 
       - name: Upload build status artifact
