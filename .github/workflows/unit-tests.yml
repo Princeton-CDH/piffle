@@ -105,8 +105,10 @@ jobs:
           pattern: build-status-*
           merge-multiple: true
 
-      # Concatenate artifact files (sorted by version) into a multi-line string
-      # and pick attachment color based on aggregate result.
+      # Concatenate artifact files (sorted by version) into a multi-line string,
+      # pick attachment color based on aggregate result, and build the complete
+      # Slack payload as JSON (avoiding YAML indentation issues with the
+      # multi-line substitution).
       - name: Build Slack message body
         env:
           BUILD_STATUS: ${{ needs.python-unit.result }}
@@ -116,38 +118,34 @@ jobs:
             failure) COLOR="#d00000" ;;
             *)       COLOR="#dbab09" ;;
           esac
-          echo "SLACK_COLOR=$COLOR" >> "$GITHUB_ENV"
-          {
-            printf 'SLACK_MATRIX_LINES<<EOF\n'
-            for f in $(ls build-status/*.txt 2>/dev/null | sort -V); do
-              cat "$f"
-              printf '\n'
-            done
-            printf 'EOF\n'
-          } >> "$GITHUB_ENV"
 
-      # Send a single Slack message with a Block Kit layout: header (overall
-      # status), context (run + commit link), and section (per-version lines).
+          MATRIX_LINES=""
+          for f in $(ls build-status/*.txt 2>/dev/null | sort -V); do
+            MATRIX_LINES="${MATRIX_LINES}$(cat "$f")"$'\n'
+          done
+
+          jq -n \
+            --arg color "$COLOR" \
+            --arg status "unit tests: ${{ needs.python-unit.result }}" \
+            --arg run_url "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on \`${GITHUB_REF_NAME}\` (<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|\`${{ github.sha }}\`>)" \
+            --arg matrix "$MATRIX_LINES" \
+            '{
+              "attachments": [
+                {
+                  "color": $color,
+                  "blocks": [
+                    {"type": "header", "text": {"type": "plain_text", "text": $status}},
+                    {"type": "section", "text": {"type": "mrkdwn", "text": $run_url}},
+                    {"type": "section", "text": {"type": "mrkdwn", "text": $matrix}}
+                  ]
+                }
+              ]
+            }' > slack-payload.json
+
       - name: Report status to Slack
         uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c  # v3.0.3
         continue-on-error: true
         with:
           webhook: ${{ secrets.ACTIONS_SLACK_WEBHOOK }}
           webhook-type: incoming-webhook
-          payload: |
-            attachments:
-              - color: "${{ env.SLACK_COLOR }}"
-                blocks:
-                  - type: "header"
-                    text:
-                      type: "plain_text"
-                      text: "unit tests: ${{ needs.python-unit.result }}"
-                  - type: "section"
-                    text:
-                      type: "mrkdwn"
-                      text: "Run <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }}> on `${{ github.ref_name }}` (<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|`${{ github.sha }}`>)"
-                  - type: "section"
-                    text:
-                      type: "mrkdwn"
-                      text: |
-                        ${{ env.SLACK_MATRIX_LINES }}
+          payload-file-path: slack-payload.json
