@@ -20,6 +20,11 @@ env:
   UV_NO_DEV: 1
   # Prevent uv run from syncing by default
   UV_NO_SYNC: 1
+  # Icon lookup for per-version Slack summary lines
+  ICON_SUCCESS: ":white_check_mark:"
+  ICON_FAILURE: ":x:"
+  ICON_CANCELLED: ":no_entry_sign:"
+  ICON_OTHER: ":warning:"
 
 jobs:
   python-unit:
@@ -65,10 +70,10 @@ jobs:
         run: |
           mkdir -p build-status
           case "$JOB_STATUS" in
-            success)   ICON=":white_check_mark:" ;;
-            failure)   ICON=":x:" ;;
-            cancelled) ICON=":no_entry_sign:" ;;
-            *)         ICON=":warning:" ;;
+            success)   ICON="$ICON_SUCCESS" ;;
+            failure)   ICON="$ICON_FAILURE" ;;
+            cancelled) ICON="$ICON_CANCELLED" ;;
+            *)         ICON="$ICON_OTHER" ;;
           esac
           # Sanitize the python version for use in a filename (e.g. 3.12 -> 3-12)
           SAFE_VERSION="${PYTHON_VERSION//./-}"
