@@ -2,6 +2,10 @@
 
 ## 0.10.0
 
+#### GitHub Actions
+
+- Update unit test GitHub Action to send one aggregated Slack notification
+
 ## 0.9.0
 
 ### Development
