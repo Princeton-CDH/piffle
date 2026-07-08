@@ -1,0 +1,21 @@
+{
+    "@context": "http://iiif.io/api/presentation/3/context.json",
+    "id": "https://api.onb.ac.at/iiif/presentation/v3/manifest/1005D477/annotation-painting/9v3kAB8F9BQruU1YHz8aLE",
+    "type": "Annotation",
+    "motivation": "painting",
+    "body": {
+        "id": "https://api.onb.ac.at/iiif/image/v3/1005D477/9v3kAB8F9BQruU1YHz8aLE/full/max/0/default.jpg",
+        "type": "Image",
+        "format": "image/jpeg",
+        "width": 6488,
+        "height": 5491,
+        "service": [
+            {
+                "id": "https://api.onb.ac.at/iiif/image/v3/1005D477/9v3kAB8F9BQruU1YHz8aLE",
+                "type": "ImageService3",
+                "profile": "level2"
+            }
+        ]
+    },
+    "target": "https://api.onb.ac.at/iiif/presentation/v3/manifest/1005D477/canvas/3"
+}

@@ -22,6 +22,7 @@ class TestIIIFPresentation3:
         FIXTURE_DIR, "georeference_annotation3.json"
     )
     test_annotation_page = os.path.join(FIXTURE_DIR, "annotationpage3.json")
+    test_painting_annotation = os.path.join(FIXTURE_DIR, "painting_annotation3.json")
 
     def test_annotation_load(self):
         pres = IIIFPresentation3.load(self.test_annotation)
@@ -205,3 +206,47 @@ class TestIIIFPresentation3:
         assert pres.first_label == pres.label[0]
         pres.label = "unlisted single title"
         assert pres.first_label == pres.label
+
+    def test_get_image_url_painting(self):
+        # painting annotation: image url comes from the body's image service
+        pres = IIIFPresentation3.load(self.test_painting_annotation)
+        assert pres.motivation == "painting"
+        assert (
+            pres.get_image_url()
+            == "https://api.onb.ac.at/iiif/image/v3/1005D477/9v3kAB8F9BQruU1YHz8aLE"
+        )
+
+    def test_get_image_url_painting_no_service(self):
+        # painting annotation without an image service: fall back to body id
+        pres = IIIFPresentation3.load(self.test_painting_annotation)
+        del pres.body["service"]
+        assert pres.get_image_url() == (
+            "https://api.onb.ac.at/iiif/image/v3/1005D477/"
+            + "9v3kAB8F9BQruU1YHz8aLE/full/max/0/default.jpg"
+        )
+
+    def test_get_image_url_painting_v2_service(self):
+        # v2-style image service (ImageService2 with @id) embedded in a
+        # v3 painting annotation, as in yale manifests
+        pres = IIIFPresentation3.load(self.test_painting_annotation)
+        # @-prefixed keys are formatted on load, so id is already normalized
+        pres.body["service"] = [
+            {
+                "id": "https://collections.library.yale.edu/iiif/2/33164296",
+                "type": "ImageService2",
+                "profile": "http://iiif.io/api/image/2/level2.json",
+            }
+        ]
+        assert (
+            pres.get_image_url()
+            == "https://collections.library.yale.edu/iiif/2/33164296"
+        )
+
+    def test_get_image_url_georeference(self):
+        # georeferencing-style annotation targets the image instead;
+        # image url comes from the target source
+        pres = IIIFPresentation3.load(self.test_annotation)
+        assert (
+            pres.get_image_url()
+            == "https://dlc.services/iiif-img/7/4/26174d19-1d4f-4dcb-9920-4c1692c18fe0"
+        )
