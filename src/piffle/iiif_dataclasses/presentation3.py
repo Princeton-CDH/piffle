@@ -131,6 +131,31 @@ class Annotation3(IIIFPresentation3):
         return [self]
 
     def get_image_url(self):
+        """URL of the image this annotation refers to.
+
+        For annotations with image content (e.g. motivation "painting"),
+        returns the image service id from the body if available, otherwise
+        the body id. For annotations that target an image instead
+        (e.g. motivation "georeferencing"), returns the target source id.
+        """
+        body = self.body
+        # body may be a list of resources; use the first
+        if isinstance(body, list):
+            body = body[0] if body else None
+        # for a choice between images, use the first option
+        if isinstance(body, dict) and body.get("type") == "Choice":
+            items = body.get("items") or []
+            body = items[0] if items else None
+        if isinstance(body, dict) and body.get("type") == "Image":
+            service = body.get("service")
+            # service may be a single reference or a list
+            if isinstance(service, list):
+                service = service[0] if service else None
+            if isinstance(service, dict) and service.get("id"):
+                return service["id"]
+            return body.get("id")
+        # otherwise, assume the annotation targets the image
+        # (e.g. georeferencing)
         return self.target["source"]["id"]
 
 

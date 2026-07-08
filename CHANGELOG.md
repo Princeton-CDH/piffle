@@ -2,6 +2,8 @@
 
 ## 0.10.0
 
+- Fix `Annotation3.get_image_url` for annotations with image content (e.g. motivation "painting"); previously it only handled annotations targeting an image (e.g. georeferencing) and raised `TypeError` otherwise
+
 #### GitHub Actions
 
 - Update unit test GitHub Action to send one aggregated Slack notification
